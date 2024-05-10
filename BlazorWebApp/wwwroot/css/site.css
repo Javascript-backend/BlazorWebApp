@@ -1170,11 +1170,12 @@ footer .container .social-media i:hover {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 100px;
+  margin-bottom: 50px;
 }
 #sign-in .container .box {
   max-width: 526px;
   width: 100%;
-  margin-top: 70px;
 }
 #sign-in .container .box:hover {
   background-color: none;
