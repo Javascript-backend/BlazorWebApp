@@ -587,6 +587,18 @@ header .container .btn-switch {
     display: block;
   }
 }
+header .container .mobile-meny {
+  display: flex;
+  gap: 10px;
+}
+@media (min-width: 992px) {
+  header .container .mobile-meny {
+    display: none;
+  }
+}
+header .container .mobile-meny a {
+  padding: 8px 15px;
+}
 header .container .account-buttons {
   grid-area: buttons;
   display: none;
@@ -603,15 +615,6 @@ header .container .account-button:hover {
   transition: all 0.25s ease-in-out;
   border-radius: 20px;
   cursor: pointer;
-}
-header .container .btn-mobile {
-  grid-area: mobile;
-  display: block;
-}
-@media (min-width: 992px) {
-  header .container .btn-mobile {
-    display: none;
-  }
 }
 
 footer {
@@ -827,6 +830,9 @@ footer .container .social-media i:hover {
 #manage-work .container .content .text .box i {
   margin-top: 4px;
   color: #6366F1;
+}
+#manage-work .container .content .text .box .fix {
+  font-size: 14.5px;
 }
 #manage-work .container .content .btn-theme {
   display: inline-flex;

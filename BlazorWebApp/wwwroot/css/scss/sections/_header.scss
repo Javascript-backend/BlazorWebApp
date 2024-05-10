@@ -39,6 +39,21 @@ header {
             }
         }
 
+        .mobile-meny {
+            display: flex;
+            gap: 10px;
+
+            @media (min-width: 992px) {
+
+                display: none;
+            }
+
+            a {
+
+                padding: 8px 15px;
+            }
+        }
+
         .account-buttons { 
             grid-area: buttons; 
             display: none;
@@ -61,13 +76,5 @@ header {
             }
         }
 
-        .btn-mobile {
-            grid-area: mobile; 
-            display: block;
-
-            @include lg {
-                display: none;
-            }
-        }
     }
 }
