@@ -11,13 +11,14 @@
         .box {
             max-width: 526px;
             width: 100%;
-
+            margin-top: 70px;
 
             &:hover {
                 background-color: none;
             }
 
             .title {
+
                 margin-bottom: 30px;
 
                 @media (max-width: 992px) {
