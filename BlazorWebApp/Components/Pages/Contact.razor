@@ -1,0 +1,86 @@
+﻿@page "/contact"
+
+<PageTitle>Contact</PageTitle>
+
+<section id="contact">
+    <div class="container">
+        <div class="contact-us">
+
+            <div class="categories">
+                <i class="fa-light fa-house"></i>
+                <a href="home.html">Home</a>
+                <i class="fa-light fa-arrow-right"></i>
+                <a class="active " href="courses.html">Contact</a>
+            </div>
+
+            <h1>Contact Us</h1>
+
+            <div class="email-careers">
+                <i class="fa-regular fa-envelope"></i>
+                <div class="text">
+                    <h4>Email us</h4>
+                    <p>Please feel free to drop us a line. We will respond as soon as possible.</p>
+                    <a href="">Leave a message<i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <div class="email-careers">
+                <i class="fa-regular fa-user-plus"></i>
+                <div class="text">
+                    <h4>Careers</h4>
+                    <p>Sit ac ipsum leo lorem magna nunc mattis maecenas non vestibulum.</p>
+                    <a href="">Send an application<i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+        </div>
+        <div class="contact-inputs">
+            <h2>Get In Contact With Us</h2>
+
+            <form method="post">
+                <div class="name">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name">
+                </div>
+                <div class="email">
+                    <label asp-for="Email"></label>
+                    <span asp-validation-for="Email"></span>
+                    <input asp-for="Email">
+                </div>
+
+                <div class="services">
+                    <label for="service">Service</label>
+                    <select asp-for="Service">
+                        <option value="" name="service" disabled selected hidden>Choose the service you are interested in</option>
+                        <option value="frontend">Frontend</option>
+                        <option value="backend">Backend</option>
+                        <option value="fullstack">Fullstack</option>
+                    </select>
+                    <span></span>
+                </div>
+                <div class="message">
+                    <label asp-for="Message"></label>
+                    <span asp-validation-for="Message"></span>
+                    <textarea asp-for="Message" rows="10"></textarea>
+                </div>
+                <div class="buttons">
+                    <button class="btn-theme" type="submit">Send Contact Request</button>
+
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<section id="contact-image">
+    <img src="/images/background/contact-image.svg" alt="">
+
+</section>
+
+
+
+@code {
+
+}

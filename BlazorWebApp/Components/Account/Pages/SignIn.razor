@@ -1,0 +1,130 @@
+﻿@page "/signin"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using BlazorWebApp.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<SignIn> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Sign in</PageTitle>
+
+<section id="sign-in">
+    <div class="container">
+        <div class="box">
+            <div class="title">
+                <h1>Welcome Back</h1>
+                <p>Don’t have an account yet?<NavLink href="/signup"> Sign up here.</NavLink></p>
+            </div>
+            <EditForm Model="formModel" method="post" OnValidSubmit="LoginUser" FormName="login" novalidate>
+                <DataAnnotationsValidator />
+                <div class="error-message">
+                    <StatusMessage Message="@errorMessage" />
+                </div>
+                <label class="label-block">Email</label>
+                <InputText @bind-Value="formModel.Email" type="email" class="input-block" placeholder="Enter your email address"/>
+                <label class="label-block">Password</label>
+                <InputText @bind-Value="formModel.Password" type="password" class="input-block" placeholder="**********" />
+                <div class="remember">
+                    <InputCheckbox @bind-Value="formModel.RememberMe" type="checkbox" />
+                    <label class="remember-label">Remember me</label>
+                </div>
+                <button class="btn-theme" type="submit">Sign in</button>
+
+                <a href="">Forgot your password?</a>
+
+                <div class="external-providers">
+                    <h6>Or sign in with your social account</h6>
+                    <div class="providers">
+                        <a class="btn-gray"><i class="fa-brands fa-google"></i>Google</a>
+                        <a class="btn-gray"><i class="fa-brands fa-facebook"></i>Facebook</a>
+                    </div>
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+</section>
+
+@code {
+    private string? errorMessage;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private SignUpModel formModel { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+    }
+
+    public async Task LoginUser()
+    {
+        // This doesn't count login failures towards account lockout
+        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        var result = await SignInManager.PasswordSignInAsync(formModel.Email, formModel.Password, formModel.RememberMe, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            Logger.LogInformation("User logged in.");
+            RedirectManager.RedirectTo(ReturnUrl);
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            RedirectManager.RedirectTo(
+                "Account/LoginWith2fa",
+                new() { ["returnUrl"] = ReturnUrl, ["rememberMe"] = formModel.RememberMe });
+        }
+        else if (result.IsLockedOut)
+        {
+            Logger.LogWarning("User account locked out.");
+            RedirectManager.RedirectTo("Account/Lockout");
+        }
+        else
+        {
+            errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    private sealed class SignUpModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

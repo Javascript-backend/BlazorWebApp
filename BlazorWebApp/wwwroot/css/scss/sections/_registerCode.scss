@@ -1,0 +1,51 @@
+#register-confirmation {
+
+    .container {
+
+
+        .box {
+
+            .title {
+                margin-top: 50px;
+
+                h1 {
+                    text-align: center;
+                }
+
+                h4 {
+                    margin-top: 50px;
+                    text-align: center;
+                }
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                .code {
+                    align-self: center;
+
+                    input {
+                        align-self: center;
+                        border-radius: 5px;
+                        padding: 5px 7px;
+                    }
+                }
+
+                button {
+                    margin-top: 20px;
+                    align-self: center;
+                    padding: 10px 60px;
+                }
+            }
+
+            p {
+                text-align: center;
+                margin-top: 10px;
+                color: $danger;
+                font-size: 18px;
+            }
+        }
+    }
+}

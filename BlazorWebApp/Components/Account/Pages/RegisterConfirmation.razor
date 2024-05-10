@@ -1,0 +1,82 @@
+﻿@page "/Account/RegisterConfirmation"
+
+
+@using System.Text
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using BlazorWebApp.Data
+@inject IConfiguration _configuration
+
+
+<PageTitle>Register confirmation</PageTitle>
+
+<section id="register-confirmation">
+    <div class="container">
+        <div class="box">
+            <div class="title">
+                <h1>An verification code has been sent to your email address!</h1>
+
+                <h4>Enter your verification code.</h4>
+            </div>
+
+            <EditForm FormName="registercode" Model="registerCodeModel" OnValidSubmit="RegisterCode" method="post" asp-route-returnUrl="@ReturnUrl" novalidate>
+                <DataAnnotationsValidator />
+                    <div class="code">                 
+                        <InputText @bind-Value="registerCodeModel.Code"  />
+                    </div>
+
+                <button class="btn-theme" type="submit">Verify Code</button>
+            </EditForm>
+
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <p>@StatusMessage</p>
+            }
+        </div>
+    </div>
+</section>
+
+
+@code {
+
+    [SupplyParameterFromForm]
+    public RegisterCodeModel registerCodeModel { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    public string StatusMessage { get; set; } = null!;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Email { get; set; }
+
+    public async Task RegisterCode(EditContext editContext)
+    {
+            if(Email != null)
+            {
+                registerCodeModel.Email = Email;
+            }
+
+        var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/Verify?code={_configuration["ApiKeyVerify"]}", registerCodeModel);
+
+            if(result.IsSuccessStatusCode)
+            {
+                RedirectManager.RedirectTo("/signin");
+            }
+
+            StatusMessage = "Failed to verify code."; 
+
+        registerCodeModel = new RegisterCodeModel();
+    }
+
+
+    public class RegisterCodeModel
+    {
+        public string Email { get; set; } = null!;
+
+        public string Code { get; set; } = null!;
+    }
+
+
+}

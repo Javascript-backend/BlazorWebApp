@@ -1,0 +1,49 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <header>
+            <div class="container">
+                <NavLink class="logo logo-light" href="/"> <img src="/images/icons/solid.svg" alt="logotype"></NavLink>
+                @*             <a class="logo logo-dark" asp-controller="Home" asp-action="Index"> <img src="~/images/icons/solid-blacktheme.svg" alt="logotype"></a> *@
+                <div id="menu">
+                    <nav>
+                        <NavLink class="menu-link" href="/">Overview</NavLink>
+                        <NavLink class="menu-link" href="/courses">Courses</NavLink>
+                        <NavLink class="menu-link" href="/contact">Contact</NavLink>
+                    </nav>
+                </div>
+
+
+                <div class="account-button">
+                   <a href="/account/details"><img src="/images/icons/profile.svg" alt=""></a>
+                </div>
+            </div>
+        </header>
+    </Authorized>
+    <NotAuthorized>
+        <header>
+            <div class="container">
+                <NavLink class="logo logo-light" href="/"> <img src="/images/icons/solid.svg" alt="logotype"></NavLink>
+                @*             <a class="logo logo-dark" asp-controller="Home" asp-action="Index"> <img src="/images/icons/solid-blacktheme.svg" alt="logotype"></a> *@
+                <div id="menu">
+                    <nav>
+                        <NavLink class="menu-link" href="#showcase">Overview</NavLink>
+                        <NavLink class="menu-link" href="#features">Features</NavLink>
+                        <NavLink class="menu-link" href="/contact">Contact</NavLink>
+                    </nav>
+                </div>
+
+
+                <div class="account-buttons">
+                    <NavLink class="btn-gray" href="/signin"> <i class="fa-regular fa-right-to-bracket"></i><span>Sign In</span></NavLink>
+                    <NavLink class="btn-theme" href="/signup"> <i class="fa-regular fa-user"></i><span>Sign Up</span></NavLink>
+                </div>
+            </div>
+        </header>
+
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+}
