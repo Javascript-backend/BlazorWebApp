@@ -1370,61 +1370,61 @@ footer .container .social-media i:hover {
   transition: background-color 0.5s ease-in-out;
 }
 
-main #courses .container {
+#courses .container {
   padding-top: 55px;
   display: grid;
   grid-template-columns: 1fr;
 }
-main #courses .container .categories {
+#courses .container .categories {
   display: flex;
   margin-bottom: 50px;
 }
-main #courses .container .categories .active {
+#courses .container .categories .active {
   color: #6366F1;
 }
 @media (max-width: 992px) {
-  main #courses .container .categories {
+  #courses .container .categories {
     justify-content: center;
   }
 }
-main #courses .container .categories i {
+#courses .container .categories i {
   margin-right: 5px;
   align-self: center;
 }
-main #courses .container .categories .fa-arrow-right {
+#courses .container .categories .fa-arrow-right {
   align-self: center;
   margin: 0px 20px;
 }
-main #courses .container .categories a {
+#courses .container .categories a {
   align-self: center;
   color: #9397AD;
 }
-main #courses .container .categories a:active {
+#courses .container .categories a:active {
   color: #6366F1;
 }
-main #courses .container .title-input-field {
+#courses .container .title-input-field {
   display: flex;
   justify-content: space-between;
 }
 @media (max-width: 992px) {
-  main #courses .container .title-input-field {
+  #courses .container .title-input-field {
     flex-direction: column;
   }
 }
 @media (max-width: 992px) {
-  main #courses .container .title-input-field h1 {
+  #courses .container .title-input-field h1 {
     text-align: center;
   }
 }
-main #courses .container .title-input-field .inputs .filters {
+#courses .container .title-input-field .inputs .filters {
   align-self: center;
   display: flex;
 }
-main #courses .container .title-input-field .inputs .filters .select {
+#courses .container .title-input-field .inputs .filters .select {
   position: relative;
   display: inline-block;
 }
-main #courses .container .title-input-field .inputs .filters .select .selected {
+#courses .container .title-input-field .inputs .filters .select .selected {
   text-align: start;
   padding: 10px 110px 10px 5px;
   border-radius: 5px;
@@ -1432,7 +1432,7 @@ main #courses .container .title-input-field .inputs .filters .select .selected {
   margin-left: 25px;
   cursor: pointer;
 }
-main #courses .container .title-input-field .inputs .filters .select .select-options {
+#courses .container .title-input-field .inputs .filters .select .select-options {
   display: none;
   position: absolute;
   background-color: white;
@@ -1442,30 +1442,30 @@ main #courses .container .title-input-field .inputs .filters .select .select-opt
   overflow: auto;
   z-index: 999;
 }
-main #courses .container .title-input-field .inputs .filters .select .option {
+#courses .container .title-input-field .inputs .filters .select .option {
   padding: 5px 50px 6px 3px;
   cursor: pointer;
 }
-main #courses .container .title-input-field .inputs .filters .select .option:hover {
+#courses .container .title-input-field .inputs .filters .select .option:hover {
   background-color: #ddd;
 }
-main #courses .container .title-input-field .inputs .filters .select.open .selected {
+#courses .container .title-input-field .inputs .filters .select.open .selected {
   background-color: #ddd;
 }
-main #courses .container .title-input-field .inputs .filters .select.open .select-options {
+#courses .container .title-input-field .inputs .filters .select.open .select-options {
   display: block;
 }
-main #courses .container .title-input-field .inputs .filters select {
+#courses .container .title-input-field .inputs .filters select {
   padding: 10px 110px 10px 5px;
   border-radius: 5px;
   border: 1px solid grey;
 }
 @media (max-width: 992px) {
-  main #courses .container .title-input-field .inputs .filters select {
+  #courses .container .title-input-field .inputs .filters select {
     padding: 10px 10px 10px 5px;
   }
 }
-main #courses .container .title-input-field .inputs .filters input {
+#courses .container .title-input-field .inputs .filters input {
   text-align: start;
   padding: 10px 110px 10px 5px;
   border-radius: 5px;
@@ -1473,35 +1473,35 @@ main #courses .container .title-input-field .inputs .filters input {
   margin-left: 25px;
 }
 @media (max-width: 768px) {
-  main #courses .container .title-input-field .inputs .filters input {
+  #courses .container .title-input-field .inputs .filters input {
     padding: 10px 10px 10px 5px;
   }
 }
-main #courses .container .title-input-field .inputs .filters .input-search-group {
+#courses .container .title-input-field .inputs .filters .input-search-group {
   position: relative;
 }
-main #courses .container .title-input-field .inputs .filters .input-search-group i {
+#courses .container .title-input-field .inputs .filters .input-search-group i {
   position: absolute;
   bottom: 35%;
   right: 2%;
 }
-main #courses .container .articles {
+#courses .container .articles {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 30px;
   margin-top: 40px;
 }
 @media (max-width: 1200px) {
-  main #courses .container .articles {
+  #courses .container .articles {
     grid-template-columns: 1fr 1fr;
   }
 }
 @media (max-width: 768px) {
-  main #courses .container .articles {
+  #courses .container .articles {
     grid-template-columns: 1fr;
   }
 }
-main #courses .container .articles .article {
+#courses .container .articles .article {
   position: relative;
   box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
   display: block;
@@ -1510,11 +1510,11 @@ main #courses .container .articles .article {
   text-decoration: none;
   transition: background-color 0.25s ease-in-out;
 }
-main #courses .container .articles .article:hover {
+#courses .container .articles .article:hover {
   cursor: pointer;
   background-color: #EFF2FC;
 }
-main #courses .container .articles .article .saved {
+#courses .container .articles .article .saved {
   color: Grey;
   position: absolute;
   background-color: #6366F1;
@@ -1524,17 +1524,17 @@ main #courses .container .articles .article .saved {
   right: 8%;
   top: 4%;
 }
-main #courses .container .articles .article .saved:hover {
+#courses .container .articles .article .saved:hover {
   background-color: white;
 }
-main #courses .container .articles .article .saved:hover .fa-bookmark {
+#courses .container .articles .article .saved:hover .fa-bookmark {
   color: grey;
 }
-main #courses .container .articles .article .saved .fa-bookmark {
+#courses .container .articles .article .saved .fa-bookmark {
   color: white;
   border-radius: 25px;
 }
-main #courses .container .articles .article .not-saved {
+#courses .container .articles .article .not-saved {
   position: absolute;
   background-color: white;
   border: none;
@@ -1543,17 +1543,17 @@ main #courses .container .articles .article .not-saved {
   right: 8%;
   top: 4%;
 }
-main #courses .container .articles .article .not-saved:hover {
+#courses .container .articles .article .not-saved:hover {
   background-color: #6366F1;
 }
-main #courses .container .articles .article .not-saved:hover .fa-bookmark {
+#courses .container .articles .article .not-saved:hover .fa-bookmark {
   color: white;
 }
-main #courses .container .articles .article .not-saved .fa-bookmark {
+#courses .container .articles .article .not-saved .fa-bookmark {
   color: Grey;
   border-radius: 25px;
 }
-main #courses .container .articles .article .best-seller {
+#courses .container .articles .article .best-seller {
   position: absolute;
   left: 4%;
   top: 4%;
@@ -1566,75 +1566,76 @@ main #courses .container .articles .article .best-seller {
   background-color: #22C55E;
   padding: 0px 5px;
 }
-main #courses .container .articles .article img {
+#courses .container .articles .article img {
   width: 100%;
 }
-main #courses .container .articles .article .article-content {
+#courses .container .articles .article .article-content {
   padding: 25px;
 }
-main #courses .container .articles .article .article-content p {
+#courses .container .articles .article .article-content p {
   line-height: 160%;
   font-weight: 400;
   color: #565973;
   font-family: "Manrope", sans-serif;
   font-size: 14px !important;
 }
-main #courses .container .articles .article .article-content .price {
+#courses .container .articles .article .article-content .price {
   display: flex;
   color: #6366F1;
   font-size: 16px;
   margin-bottom: 20px;
 }
-main #courses .container .articles .article .article-content .price .sale {
+#courses .container .articles .article .article-content .price .sale {
   color: #EF4444;
   font-size: 18px;
   margin-right: 10px;
   align-self: center;
 }
-main #courses .container .articles .article .article-content .price p {
+#courses .container .articles .article .article-content .price p {
   color: #9397AD;
   font-size: 16px;
   margin: 0;
   align-self: center;
 }
-main #courses .container .articles .article .article-content .hours-likes {
+#courses .container .articles .article .article-content .hours-likes {
   padding-top: 25px;
   display: flex;
   gap: 25px;
   border-top: 1px solid #E2E5F1;
 }
-main #courses .container .articles .article .article-content .hours-likes i {
+#courses .container .articles .article .article-content .hours-likes i {
   align-self: center;
   margin-right: 5px;
 }
-main #courses .container .articles .article .article-content .hours-likes .hours {
+#courses .container .articles .article .article-content .hours-likes .hours {
   display: flex;
 }
-main #courses .container .articles .article .article-content .hours-likes .hours p {
+#courses .container .articles .article .article-content .hours-likes .hours p {
   margin: 0;
 }
-main #courses .container .articles .article .article-content .hours-likes .likes {
+#courses .container .articles .article .article-content .hours-likes .likes {
   display: flex;
 }
-main #courses .container .articles .article .article-content .hours-likes .likes p {
+#courses .container .articles .article .article-content .hours-likes .likes p {
   margin: 0;
 }
-main #courses .container .button {
+#courses .container .button {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
 }
-main #courses .container .button span {
+#courses .container .button span {
   margin-right: 5px;
 }
-main #courses .container .button .active {
+#courses .container .button .active {
   background-color: grey;
 }
-main #get-started {
+
+#get-started {
   padding-top: 60px;
 }
-main #get-started .container {
+#get-started .container {
   background: linear-gradient(#c0c1e4, #ececf7);
   border-radius: 10px;
   display: flex;
@@ -1643,45 +1644,45 @@ main #get-started .container {
   padding: 40px 100px;
 }
 @media (max-width: 768px) {
-  main #get-started .container {
+  #get-started .container {
     padding: 20px 0px;
   }
 }
-main #get-started .container .section-title {
+#get-started .container .section-title {
   display: flex;
   flex-direction: column;
   align-self: center;
   gap: 25px;
 }
 @media (max-width: 992px) {
-  main #get-started .container .section-title {
+  #get-started .container .section-title {
     text-align: center;
   }
 }
-main #get-started .container .section-title h1 p {
+#get-started .container .section-title h1 p {
   color: #6366F1;
   display: inline;
   margin-right: 10px;
 }
-main #get-started .container .section-title a {
+#get-started .container .section-title a {
   display: inline-flex;
   align-self: flex-start;
   padding: 15px 40px;
 }
 @media (max-width: 992px) {
-  main #get-started .container .section-title a {
+  #get-started .container .section-title a {
     align-self: center;
   }
 }
 @media (max-width: 992px) {
-  main #get-started .container img {
+  #get-started .container img {
     display: none;
   }
 }
 
 #account .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   padding-top: 50px;
   padding-bottom: 100px;
 }
@@ -1750,6 +1751,16 @@ main #get-started .container .section-title a {
 #account .container .details {
   padding-bottom: 100px;
 }
+@media (max-width: 416px) {
+  #account .container .details form input {
+    max-width: 320px;
+  }
+}
+@media (max-width: 416px) {
+  #account .container .details form textarea {
+    max-width: 320px;
+  }
+}
 @media (max-width: 992px) {
   #account .container .details .basic-info {
     text-align: center;
@@ -1768,11 +1779,6 @@ main #get-started .container .section-title a {
   #account .container .details .basic-info form {
     justify-content: center;
     align-items: center;
-  }
-}
-@media (max-width: 416px) {
-  #account .container .details .basic-info form input {
-    width: 320px;
   }
 }
 #account .container .details .basic-info form label {
@@ -1853,6 +1859,11 @@ main #get-started .container .section-title a {
 }
 #account .container .details .address h5 {
   color: #6366F1;
+}
+@media (max-width: 992px) {
+  #account .container .details .address h5 {
+    text-align: center;
+  }
 }
 #account .container .details .address form {
   display: flex;
@@ -2354,271 +2365,133 @@ main #get-started .container .section-title a {
   background-color: #4C82F7;
 }
 
-#security .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding-top: 50px;
-  padding-bottom: 100px;
-}
-@media (max-width: 1200px) {
-  #security .container {
-    grid-template-columns: 1fr;
-  }
+.security-information {
+  max-width: 856px;
 }
 @media (max-width: 992px) {
-  #security .container {
-    padding-bottom: 0px;
-  }
-}
-#security .container .profile {
-  max-width: 318px;
-  width: 100%;
-  border-right: 1px solid #c9cbda;
-  padding-right: 10px;
-}
-@media (max-width: 1400px) {
-  #security .container .profile {
-    border-right: none;
-  }
-}
-@media (max-width: 1200px) {
-  #security .container .profile {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-#security .container .profile .profile-picture {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-#security .container .profile .profile-picture i {
-  position: absolute;
-  right: 36%;
-  background-color: white;
-  padding: 5px;
-  border-radius: 15px;
-}
-#security .container .profile .buttons {
-  display: flex;
-  flex-direction: column;
-  margin-top: 25px;
-  gap: 10px;
-}
-#security .container .profile .buttons .btn-theme {
-  display: flex;
-  justify-content: flex-start;
-  background-color: white;
-  font-size: 16px;
-  padding: 10px 15px;
-  color: black;
-}
-#security .container .profile .buttons .btn-theme:hover {
-  background-color: #6366F1;
-}
-#security .container .profile .buttons .active {
-  background-color: #6366F1;
-}
-#security .container .details {
-  padding-bottom: 100px;
-}
-@media (max-width: 992px) {
-  #security .container .details .security-information {
+  .security-information {
     text-align: center;
     margin-top: 20px;
   }
 }
-#security .container .details .security-information h5 {
+.security-information h5 {
   color: #6366F1;
 }
-#security .container .details .security-information form {
+.security-information form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 @media (max-width: 992px) {
-  #security .container .details .security-information form {
+  .security-information form {
     justify-content: center;
     align-items: center;
   }
 }
 @media (max-width: 416px) {
-  #security .container .details .security-information form input {
+  .security-information form input {
     width: 320px;
   }
 }
-#security .container .details .security-information form label {
+.security-information form label {
   display: block;
   color: #0B0F19;
   font-weight: 900;
 }
-#security .container .details .security-information form .new-confirm-password {
+.security-information form .new-confirm-password {
   display: flex;
   gap: 30px;
 }
 @media (max-width: 992px) {
-  #security .container .details .security-information form .new-confirm-password {
+  .security-information form .new-confirm-password {
     flex-direction: column;
   }
 }
-#security .container .details .security-information form .new-confirm-password input {
+.security-information form .new-confirm-password input {
   display: block;
   width: 416px;
   border-radius: 5px;
   padding: 10px 10px;
   border: 1px solid grey;
 }
-#security .container .details .security-information form .current-password input {
+.security-information form .current-password input {
   display: block;
   width: 416px;
   border-radius: 5px;
   padding: 10px 10px;
   border: 1px solid grey;
 }
-#security .container .details .security-information form .buttons {
+.security-information form .buttons {
   display: flex;
   gap: 30px;
   transition: all 0.25s ease-in-out;
   margin-bottom: 20px;
 }
 @media (max-width: 416px) {
-  #security .container .details .security-information form .buttons {
+  .security-information form .buttons {
     flex-direction: column;
   }
 }
-#security .container .details .security-information form .buttons .btn-theme {
+.security-information form .buttons .btn-theme {
   transition: all 0.25s ease-in-out;
 }
-#security .container .details .security-information form .buttons #cancel {
+.security-information form .buttons #cancel {
   background-color: #EFF2FC;
   color: black;
   transition: all 0.25s ease-in-out;
 }
-#security .container .details .security-information form .buttons #cancel:hover {
+.security-information form .buttons #cancel:hover {
   background-color: grey;
 }
-#security .container .details .security-information form .delete {
+.security-information form .delete {
   border-top: 1px solid #c9cbda;
   padding-top: 20px;
 }
-#security .container .details .security-information form .delete span {
+.security-information form .delete span {
   display: block;
 }
-#security .container .details .security-information form .delete label {
+.security-information form .delete label {
   display: inline;
   color: #565973;
   margin-left: 10px;
 }
-#security .container .details .security-information form .delete .button {
+.security-information form .delete .button {
   display: block;
   background-color: #EF4444;
   padding: 8px 40px;
   margin-top: 30px;
 }
 @media (max-width: 992px) {
-  #security .container .details .security-information form .delete .button {
+  .security-information form .delete .button {
     margin-left: auto;
     margin-right: auto;
   }
 }
 
-#saved-courses .container {
-  display: flex;
-  gap: 150px;
-  padding-top: 50px;
-  padding-bottom: 100px;
+.courses {
+  align-self: flex-start;
 }
-@media (max-width: 1200px) {
-  #saved-courses .container {
-    gap: 80px;
-  }
-}
-@media (max-width: 992px) {
-  #saved-courses .container {
-    padding-bottom: 0px;
-    display: grid;
-  }
-}
-#saved-courses .container .profile {
-  max-width: 318px;
-  width: 100%;
-  border-right: 1px solid #c9cbda;
-  padding-right: 10px;
-}
-@media (max-width: 1400px) {
-  #saved-courses .container .profile {
-    border-right: none;
-  }
-}
-@media (max-width: 1200px) {
-  #saved-courses .container .profile {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-#saved-courses .container .profile .profile-picture {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-#saved-courses .container .profile .profile-picture i {
-  position: absolute;
-  right: 36%;
-  background-color: white;
-  padding: 5px;
-  border-radius: 15px;
-}
-#saved-courses .container .profile .buttons {
-  display: flex;
-  flex-direction: column;
-  margin-top: 25px;
-  gap: 10px;
-}
-#saved-courses .container .profile .buttons .btn-theme {
-  display: flex;
-  justify-content: flex-start;
-  background-color: white;
-  font-size: 16px;
-  padding: 10px 15px;
-  color: black;
-}
-#saved-courses .container .profile .buttons .btn-theme:hover {
-  background-color: #6366F1;
-}
-#saved-courses .container .profile .buttons .active {
-  background-color: #6366F1;
-}
-#saved-courses .container .courses {
-  max-width: 648px;
-  width: 100%;
-}
-#saved-courses .container .courses .title-button {
+.courses .title-button {
   display: flex;
   justify-content: space-between;
 }
-#saved-courses .container .courses .title-button form button {
+.courses .title-button form button {
   background-color: white;
   color: red;
   padding: 8px 30px;
 }
-#saved-courses .container .courses .articles {
+.courses .articles {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   margin-top: 40px;
 }
 @media (max-width: 992px) {
-  #saved-courses .container .courses .articles {
+  .courses .articles {
     grid-template-columns: 1fr;
   }
 }
-#saved-courses .container .courses .articles .article {
+.courses .articles .article {
   position: relative;
   box-shadow: 0 0 11px rgba(33, 33, 33, 0.2);
   display: block;
@@ -2627,11 +2500,11 @@ main #get-started .container .section-title a {
   text-decoration: none;
   transition: background-color 0.25s ease-in-out;
 }
-#saved-courses .container .courses .articles .article:hover {
+.courses .articles .article:hover {
   cursor: pointer;
   background-color: #EFF2FC;
 }
-#saved-courses .container .courses .articles .article .saved {
+.courses .articles .article .saved {
   color: Grey;
   position: absolute;
   background-color: #6366F1;
@@ -2641,17 +2514,17 @@ main #get-started .container .section-title a {
   right: 8%;
   top: 4%;
 }
-#saved-courses .container .courses .articles .article .saved:hover {
+.courses .articles .article .saved:hover {
   background-color: white;
 }
-#saved-courses .container .courses .articles .article .saved:hover .fa-bookmark {
+.courses .articles .article .saved:hover .fa-bookmark {
   color: grey;
 }
-#saved-courses .container .courses .articles .article .saved .fa-bookmark {
+.courses .articles .article .saved .fa-bookmark {
   color: white;
   border-radius: 25px;
 }
-#saved-courses .container .courses .articles .article .not-saved {
+.courses .articles .article .not-saved {
   position: absolute;
   background-color: white;
   border: none;
@@ -2660,17 +2533,17 @@ main #get-started .container .section-title a {
   right: 8%;
   top: 4%;
 }
-#saved-courses .container .courses .articles .article .not-saved:hover {
+.courses .articles .article .not-saved:hover {
   background-color: #6366F1;
 }
-#saved-courses .container .courses .articles .article .not-saved:hover .fa-bookmark {
+.courses .articles .article .not-saved:hover .fa-bookmark {
   color: white;
 }
-#saved-courses .container .courses .articles .article .not-saved .fa-bookmark {
+.courses .articles .article .not-saved .fa-bookmark {
   color: Grey;
   border-radius: 25px;
 }
-#saved-courses .container .courses .articles .article .best-seller {
+.courses .articles .article .best-seller {
   position: absolute;
   left: 4%;
   top: 4%;
@@ -2683,57 +2556,57 @@ main #get-started .container .section-title a {
   background-color: #22C55E;
   padding: 0px 5px;
 }
-#saved-courses .container .courses .articles .article img {
+.courses .articles .article img {
   width: 100%;
 }
-#saved-courses .container .courses .articles .article .article-content {
+.courses .articles .article .article-content {
   padding: 25px;
 }
-#saved-courses .container .courses .articles .article .article-content p {
+.courses .articles .article .article-content p {
   line-height: 160%;
   font-weight: 400;
   color: #565973;
   font-family: "Manrope", sans-serif;
   font-size: 14px !important;
 }
-#saved-courses .container .courses .articles .article .article-content .price {
+.courses .articles .article .article-content .price {
   display: flex;
   color: #6366F1;
   font-size: 16px;
   margin-bottom: 20px;
 }
-#saved-courses .container .courses .articles .article .article-content .price .sale {
+.courses .articles .article .article-content .price .sale {
   color: #EF4444;
   font-size: 18px;
   margin-right: 10px;
   align-self: center;
 }
-#saved-courses .container .courses .articles .article .article-content .price p {
+.courses .articles .article .article-content .price p {
   color: #9397AD;
   font-size: 16px;
   margin: 0;
   align-self: center;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes {
+.courses .articles .article .article-content .hours-likes {
   padding-top: 25px;
   display: flex;
   gap: 25px;
   border-top: 1px solid #E2E5F1;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes i {
+.courses .articles .article .article-content .hours-likes i {
   align-self: center;
   margin-right: 5px;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes .hours {
+.courses .articles .article .article-content .hours-likes .hours {
   display: flex;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes .hours p {
+.courses .articles .article .article-content .hours-likes .hours p {
   margin: 0;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes .likes {
+.courses .articles .article .article-content .hours-likes .likes {
   display: flex;
 }
-#saved-courses .container .courses .articles .article .article-content .hours-likes .likes p {
+.courses .articles .article .article-content .hours-likes .likes p {
   margin: 0;
 }
 
@@ -2751,104 +2624,36 @@ main #get-started .container .section-title a {
   width: 100%;
 }
 
-#notifications .container {
-  display: flex;
-  gap: 130px;
-  padding-top: 50px;
-  padding-bottom: 100px;
-}
 @media (max-width: 1200px) {
-  #notifications .container {
-    display: block;
-  }
-}
-@media (max-width: 992px) {
-  #notifications .container {
-    padding-bottom: 0px;
-  }
-}
-#notifications .container .profile {
-  max-width: 318px;
-  width: 100%;
-  border-right: 1px solid #c9cbda;
-  padding-right: 10px;
-}
-@media (max-width: 1400px) {
-  #notifications .container .profile {
-    border-right: none;
-  }
-}
-@media (max-width: 1200px) {
-  #notifications .container .profile {
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-#notifications .container .profile .profile-picture {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-#notifications .container .profile .profile-picture i {
-  position: absolute;
-  right: 36%;
-  background-color: white;
-  padding: 5px;
-  border-radius: 15px;
-}
-#notifications .container .profile .buttons {
-  display: flex;
-  flex-direction: column;
-  margin-top: 25px;
-  gap: 10px;
-}
-#notifications .container .profile .buttons .btn-theme {
-  display: flex;
-  justify-content: flex-start;
-  background-color: white;
-  font-size: 16px;
-  padding: 10px 15px;
-  color: black;
-}
-#notifications .container .profile .buttons .btn-theme:hover {
-  background-color: #6366F1;
-}
-#notifications .container .profile .buttons .active {
-  background-color: #6366F1;
-}
-@media (max-width: 1200px) {
-  #notifications .container .settings {
+  .settings {
     margin-top: 20px;
   }
 }
 @media (max-width: 1200px) {
-  #notifications .container .settings h2 {
+  .settings h2 {
     text-align: center;
   }
 }
-#notifications .container .settings form {
+.settings form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-#notifications .container .settings form label {
+.settings form label {
   color: black;
 }
 @media (max-width: 1200px) {
-  #notifications .container .settings form {
+  .settings form {
     align-items: center;
     text-align: center;
   }
 }
 @media (max-width: 416px) {
-  #notifications .container .settings form input {
+  .settings form input {
     width: 320px;
   }
 }
-#notifications .container .settings form .email input {
+.settings form .email input {
   margin-top: 5px;
   display: block;
   width: 416px;
@@ -2857,26 +2662,26 @@ main #get-started .container .section-title a {
   border: 1px solid grey;
 }
 @media (max-width: 1200px) {
-  #notifications .container .settings form .switches .form-check {
+  .settings form .switches .form-check {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
   }
 }
-#notifications .container .settings form .switches .form-check .form-check-input {
+.settings form .switches .form-check .form-check-input {
   padding: 10px 20px;
   margin-right: 10px;
 }
-#notifications .container .settings form .switches .form-check .form-check-input:checked {
+.settings form .switches .form-check .form-check-input:checked {
   background-color: #22C55E;
   border-color: #22C55E;
 }
-#notifications .container .settings form .switches .form-check label {
+.settings form .switches .form-check label {
   display: block;
   padding-left: 12px;
 }
-#notifications .container .settings form .buttons {
+.settings form .buttons {
   margin-top: 240px;
   display: flex;
   gap: 30px;
@@ -2884,24 +2689,24 @@ main #get-started .container .section-title a {
   margin-bottom: 20px;
 }
 @media (max-width: 416px) {
-  #notifications .container .settings form .buttons {
+  .settings form .buttons {
     flex-direction: column;
   }
 }
 @media (max-width: 1200px) {
-  #notifications .container .settings form .buttons {
+  .settings form .buttons {
     margin-top: 40px;
   }
 }
-#notifications .container .settings form .buttons .btn-theme {
+.settings form .buttons .btn-theme {
   transition: all 0.25s ease-in-out;
 }
-#notifications .container .settings form .buttons #cancel {
+.settings form .buttons #cancel {
   background-color: #EFF2FC;
   color: black;
   transition: all 0.25s ease-in-out;
 }
-#notifications .container .settings form .buttons #cancel:hover {
+.settings form .buttons #cancel:hover {
   background-color: grey;
 }
 
