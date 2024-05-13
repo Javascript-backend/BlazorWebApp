@@ -549,10 +549,31 @@ a:hover {
 header {
   padding: 15px 0;
 }
+header .menu-bar {
+  display: none;
+}
+header .menu-bar.active {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  gap: 30px;
+  font-weight: bolder;
+  font-size: 20px;
+  padding-top: 50px;
+}
+header .menu-bar.active a {
+  color: black;
+}
+@media (min-width: 1200px) {
+  header .menu-bar.active {
+    display: none;
+  }
+}
 header .container {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   grid-template-areas: "logo mobile";
   gap: 40px;
 }
@@ -569,6 +590,20 @@ header .container {
 }
 header .container .logo {
   grid-area: logo;
+}
+header .container .little-box {
+  display: flex;
+  justify-content: center;
+}
+@media (min-width: 1200px) {
+  header .container .little-box {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  header .container .signout {
+    display: none;
+  }
 }
 header .container #menu {
   grid-area: menu;
