@@ -12,18 +12,8 @@
                         <NavLink class="menu-link" href="/contact">Contact</NavLink>
                     </nav>
                 </div>
+                <NavLink class="btn-theme" href="/Account/SignOut"><i class="fa-solid fa-arrow-right-from-bracket"></i>Sign Out</NavLink>
                 
-                <form @onsubmit="SignOutUser" method="post" @formname="signOutForm">
-                    
-                    <AntiforgeryToken />
-                    <div class="account-buttons">
-                        <button type="submit" class="btn-gray">
-                            <i class="fa-regular fa-right-to-bracket"></i>
-                            <span>Sign Out</span>
-                        </button>
-                    </div>
-                    
-                </form>
                 
                 <div class="account-button">
                    <a href="/Account/Manage"><img src="/images/icons/profile.svg" alt=""></a>
