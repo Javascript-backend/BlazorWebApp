@@ -595,9 +595,6 @@ header .container .little-box {
     display: none;
   }
 }
-header .container .btn-theme {
-  display: none;
-}
 header .container #menu {
   grid-area: menu;
   display: none;
