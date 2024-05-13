@@ -2117,12 +2117,12 @@ footer .container .social-media i:hover {
   padding: 10px 30px;
 }
 
-#contact-image {
+img {
   max-width: 1920px;
   width: 100%;
 }
 @media (max-width: 1400px) {
-  #contact-image {
+  img {
     display: none;
   }
 }
