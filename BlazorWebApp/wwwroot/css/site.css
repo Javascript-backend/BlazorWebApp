@@ -577,6 +577,11 @@ header .container {
   grid-template-areas: "logo mobile";
   gap: 40px;
 }
+@media (max-width: 1000px) {
+  header .container .signout {
+    display: none;
+  }
+}
 @media (min-width: 992px) {
   header .container {
     grid-template-columns: auto 1fr auto auto;

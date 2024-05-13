@@ -27,6 +27,15 @@ header {
     }
 
     .container {
+
+        .signout {
+
+            @media(max-width: 1000px) {
+
+                display:none;
+            }
+        }
+
         display: grid;
         align-items: center;
         grid-template-columns: 1fr auto auto;
