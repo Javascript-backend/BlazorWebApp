@@ -212,13 +212,11 @@
     }
 }
 
-img {
-
+.contact-image {
     max-width: 1920px;
     width: 100%;
 
     @media (max-width: 1400px) {
-
-        display:none;
+        display: none;
     }
 }

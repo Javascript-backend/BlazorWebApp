@@ -552,7 +552,7 @@ header {
 header .container {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto 1fr;
   grid-template-areas: "logo mobile";
   gap: 40px;
 }
@@ -2117,12 +2117,12 @@ footer .container .social-media i:hover {
   padding: 10px 30px;
 }
 
-img {
+.contact-image {
   max-width: 1920px;
   width: 100%;
 }
 @media (max-width: 1400px) {
-  img {
+  .contact-image {
     display: none;
   }
 }
