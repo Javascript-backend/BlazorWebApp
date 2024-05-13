@@ -1,37 +1,79 @@
 header {
     padding: 15px 0;
 
+    .menu-bar {
+        display: none;
+    }
+
+    .menu-bar.active {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 30px;
+        font-weight: bolder;
+        font-size: 20px;
+        padding-top: 50px;
+
+        a {
+            color: black;
+        }
+    }
+
+    @media (min-width:1200px) {
+        .menu-bar.active {
+            display: none;
+        }
+    }
+
     .container {
         display: grid;
         align-items: center;
-        grid-template-columns: 1fr auto 1fr;
-        grid-template-areas:  "logo mobile";
+        grid-template-columns: 1fr auto auto;
+        grid-template-areas: "logo mobile";
         gap: 40px;
-        
+
         @include lg {
             grid-template-columns: auto 1fr auto auto;
-            grid-template-areas:  "logo menu switch buttons";
+            grid-template-areas: "logo menu switch buttons";
         }
 
-        .logo { grid-area: logo; }
+        .logo {
+            grid-area: logo;
+        }
 
 
-        #menu { 
-            grid-area: menu; 
+        .little-box {
+            display: flex;
+            justify-content: center;
+        }
+
+        @media (min-width:1200px) {
+            .little-box {
+                display: none;
+            }
+        }
+
+        
+        
+
+
+        #menu {
+            grid-area: menu;
             display: none;
 
             @include lg {
                 display: block;
             }
-            
+
             nav {
                 display: flex;
                 gap: 15px;
             }
         }
-        
-        .btn-switch { 
-            grid-area: switch; 
+
+        .btn-switch {
+            grid-area: switch;
             display: none;
 
             @include lg {
@@ -44,37 +86,35 @@ header {
             gap: 12px;
 
             @media (min-width: 992px) {
-
                 display: none;
             }
 
             a {
-
                 padding: 8px 15px;
             }
         }
 
-        .account-buttons { 
-            grid-area: buttons; 
+        .account-buttons {
+            grid-area: buttons;
             display: none;
             gap: 15px;
 
             @include lg {
                 display: flex;
             }
+
+            
         }
 
         .account-button {
 
             &:hover {
-                    
-                box-shadow: 0 0 11px rgba(33,33,33,.2); 
+                box-shadow: 0 0 11px rgba(33,33,33,.2);
                 text-decoration: none;
                 transition: all 0.25s ease-in-out;
                 border-radius: 20px;
                 cursor: pointer;
             }
         }
-
     }
 }
