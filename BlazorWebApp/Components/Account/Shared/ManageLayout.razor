@@ -1,17 +1,27 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
-<h1>Manage your account</h1>
-
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <ManageNavMenu />
+<section id="account">
+    <div class="container">
+        <div class="profile">
+            <div class="profile-picture">
+                <img src="/images/profile/image.svg" alt="Profile picture">
+                <i class="fa-solid fa-repeat"></i>
+                <h5>firstname lastname</h5>
+                <p>profile email</p>
+            </div>
+            <div class="buttons">
+                <NavLink class="btn-theme" href="/Account/Manage"><i class="fa-regular fa-gear"></i>Account Details</NavLink>
+                <NavLink class="btn-theme" href="/Account/PersonalData"><i class="fa-solid fa-lock"></i>Security</NavLink>
+                <NavLink class="btn-theme" href="/account/Notifications"><i class="fa-solid fa-bell"></i>Notifications</NavLink>
+                <NavLink class="btn-theme" href="/account/Messages"><i class="fa-solid fa-message"></i>Messages</NavLink>
+                <NavLink class="btn-theme" href="/Account/SavedCourses"><i class="fa-solid fa-bookmark"></i>Saved Courses</NavLink>
+                <NavLink class="btn-theme" href="/Account/SignOut"><i class="fa-solid fa-arrow-right-from-bracket"></i>Sign Out</NavLink>
+            </div>
         </div>
-        <div class="col-md-9">
+        <div class="details">
             @Body
         </div>
+         
     </div>
-</div>
+</section>

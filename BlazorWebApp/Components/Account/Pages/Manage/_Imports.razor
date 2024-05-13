@@ -1,2 +1,11 @@
 ﻿@layout ManageLayout
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using BlazorWebApp.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IdentityRedirectManager RedirectManager

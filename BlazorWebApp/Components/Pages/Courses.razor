@@ -1,0 +1,81 @@
+﻿@page "/Courses"
+
+<PageTitle>Courses</PageTitle>
+
+<section id="courses">
+    <div class="container">
+        <div class="categories">
+            <i class="fa-light fa-house"></i>
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <i class="fa-light fa-arrow-right"></i>
+            <a class="active " asp-controller="Account" asp-action="Courses">Courses</a>
+        </div>
+        <div class="title-input-field">
+            <h1>Courses</h1>
+            <div class="inputs">
+                <form class="filters">
+
+                    <div class="select">
+                        <div class="selected">All categories</div>
+                        <div class="select-options">
+                            <div class="option" data-value="all">All categories</div>
+
+                        </div>
+                    </div>
+
+                    <div class="input-search-group">
+                        <input id="searchQuery" name="searchQuery" placeholder="Search courses" />
+                        <i class="fa-regular fa-search"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="articles">
+
+            <div class="article" onclick="location.href='/SingleCourse'">
+                <div class="best-seller">Best seller</div>
+
+
+                <a href="#" class="not-saved"><i class="fa-regular fa-bookmark"></i></a>
+
+                <img src="/images/articles/article-1.svg" alt="">
+                <div class="article-content">
+                    <h5>Fullstack Web Developer Course from Scratch</h5>
+                    <p>By Robert Fox</p>
+                    <div class="price">
+
+                        <div> $12.50</div>
+
+                        <div class="sale">Sale price</div>
+                        <s><p>Old price</p></s>
+
+                    </div>
+                    <div class="hours-likes">
+                        <div class="hours">
+                            <i class="fa-duotone fa-timer"></i>
+                            <p>220 hours</p>
+                        </div>
+                        <div class="likes">
+                            <i class="fa-light fa-thumbs-up"></i>
+                            <p>94% (4.2K)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+
+    </div>
+
+</section>
+
+<section id="get-started">
+    <div class="container">
+        <div class="section-title">
+            <div class="text-lead">Ready to get started?</div>
+            <h1>Take Your <p>Skills</p>to the Next Level</h1>
+            <a class="btn-theme " href="">Work with us</a>
+        </div>
+        <img src="/images/background/illustration.svg" alt="">
+    </div>
+</section>

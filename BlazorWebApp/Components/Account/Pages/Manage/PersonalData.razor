@@ -1,26 +1,54 @@
-﻿@page "/Account/Manage/PersonalData"
+﻿@page "/Account/PersonalData"
 
 @inject IdentityUserAccessor UserAccessor
 
-<PageTitle>Personal Data</PageTitle>
+<PageTitle>Security</PageTitle>
 
-<StatusMessage />
-<h3>Personal Data</h3>
 
-<div class="row">
-    <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
-        <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-        </p>
-        <form action="Account/Manage/DownloadPersonalData" method="post">
-            <AntiforgeryToken />
-            <button class="btn btn-primary" type="submit">Download</button>
-        </form>
-        <p>
-            <a href="Account/Manage/DeletePersonalData" class="btn btn-danger">Delete</a>
-        </p>
-    </div>
+<div class="security-information">
+    <h2>Security</h2>
+    <h5>Password</h5>
+    <form method="post">
+        <div class="current-password">
+
+            <label>Current password</label>
+            <input>
+            <span></span>
+             
+        </div>
+        <div class="new-confirm-password">
+            <div class="new-password">
+
+                <label>New password</label>
+                <input>
+                <span></span>
+                    
+            </div>
+            <div class="confirm-password">
+
+                <label>Confirm new password</label>
+                <input>
+                <span></span>
+                    
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="cancel" class="btn-theme" type="reset"> Cancel</button>
+            <button class="btn-theme" type="submit">Change password </button>
+        </div>
+    </form>
+
+    <form method="post" >
+        <div class="delete">
+            <h5>Delete account</h5>
+            <p>When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
+            @* InputCheckbox @bind-Value=""/> *@
+            <label>Yes, I want to delete my account.</label>
+            <span></span>
+            <button class="btn-theme button" type="submit">Delete </button>
+        </div>
+    </form>
 </div>
 
 @code {
