@@ -33,6 +33,7 @@ header {
         grid-template-areas: "logo mobile";
         gap: 40px;
 
+
         @include lg {
             grid-template-columns: auto 1fr auto auto;
             grid-template-areas: "logo menu switch buttons";
@@ -54,8 +55,13 @@ header {
             }
         }
 
-        
-        
+
+        .signout {
+
+            @media(max-width: 1000px) {
+                display: none;
+            }
+        }
 
 
         #menu {
@@ -102,8 +108,6 @@ header {
             @include lg {
                 display: flex;
             }
-
-            
         }
 
         .account-button {
