@@ -2,9 +2,18 @@ header {
     padding: 15px 0;
 
     .container {
+
+        .signout {
+
+            @media(max-width: 1000px) {
+
+                display:none;
+            }
+        }
+
         display: grid;
         align-items: center;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: 1fr auto;
         grid-template-areas:  "logo mobile";
         gap: 40px;
         

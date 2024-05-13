@@ -552,9 +552,14 @@ header {
 header .container {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   grid-template-areas: "logo mobile";
   gap: 40px;
+}
+@media (max-width: 1000px) {
+  header .container .signout {
+    display: none;
+  }
 }
 @media (min-width: 992px) {
   header .container {
