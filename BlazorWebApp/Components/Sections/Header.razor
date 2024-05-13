@@ -11,13 +11,26 @@
                         <NavLink class="menu-link" href="/contact">Contact</NavLink>
                     </nav>
                 </div>
-
+                
+                <form @onsubmit="SignOutUser" method="post" @formname="signOutForm">
+                    
+                    <AntiforgeryToken />
+                    <div class="account-buttons">
+                        <button type="submit" class="btn-gray">
+                            <i class="fa-regular fa-right-to-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                    
+                </form>
+                
                 <div class="account-button">
                    <a href="/account/details"><img src="/images/icons/profile.svg" alt=""></a>
                 </div>
             </div>
         </header>
     </Authorized>
+
     <NotAuthorized>
         <header>
             <div class="container">
@@ -50,4 +63,11 @@
 
 @code {
 
+
+    
+
+    private async Task SignOutUser()
+    {
+        await SignInManager.SignOutAsync();
+    }
 }
