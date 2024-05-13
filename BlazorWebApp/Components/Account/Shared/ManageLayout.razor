@@ -1,14 +1,36 @@
 ﻿@inherits LayoutComponentBase
 @layout AccountLayout
 
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using BlazorWebApp.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IdentityRedirectManager RedirectManager
+
+
 <section id="account">
     <div class="container">
         <div class="profile">
             <div class="profile-picture">
                 <img src="/images/profile/image.svg" alt="Profile picture">
                 <i class="fa-solid fa-repeat"></i>
-                <h5>firstname lastname</h5>
-                <p>profile email</p>
+
+                @if(profileModel == null)
+                {
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                }
+                else
+                {
+                    <h5>@profileModel.FirstName @profileModel.LastName</h5>
+                    <p>@profileModel.Email</p>
+                }
+
             </div>
             <div class="buttons">
                 <NavLink class="btn-theme" href="/Account/Manage"><i class="fa-regular fa-gear"></i>Account Details</NavLink>
@@ -25,3 +47,47 @@
          
     </div>
 </section>
+
+
+@code {
+    private ApplicationUser user = default!;
+
+    [CascadingParameter]
+
+   
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private ProfileModel profileModel { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext != null)
+        {
+            user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+
+
+            if (user != null)
+            {
+                profileModel.Email = user.Email;
+                profileModel.FirstName = user.FirstName;
+                profileModel.LastName = user.LastName;
+            }
+        }
+
+
+
+    }
+
+    private sealed class ProfileModel
+    {
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+
+        public string? Email { get; set; }
+    }
+}
+
+
