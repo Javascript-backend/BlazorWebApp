@@ -1,9 +1,12 @@
 using BlazorWebApp.Components;
 using BlazorWebApp.Components.Account;
 using BlazorWebApp.Data;
+using BlazorWebApp.Data.Migrations;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,20 +33,31 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
+
+
+
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.User.RequireUniqueEmail = true;
     options.Password.RequiredLength = 8;
-
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
+
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+
+
 var app = builder.Build();
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,6 +73,8 @@ else
 }
 
 app.UseHttpsRedirection();
+
+
 
 app.UseStaticFiles();
 app.UseAntiforgery();
