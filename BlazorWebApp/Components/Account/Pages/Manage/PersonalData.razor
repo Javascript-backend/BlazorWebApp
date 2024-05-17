@@ -1,6 +1,14 @@
 ﻿@page "/Account/PersonalData"
+@using Microsoft.EntityFrameworkCore
 
+@rendermode InteractiveServer
+
+@inject UserManager<ApplicationUser> usermanager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IdentityUserAccessor UserAccessor
+@inject IServiceProvider ServiceProvider
+
+
 
 <PageTitle>Security</PageTitle>
 
@@ -8,27 +16,39 @@
 <div class="security-information">
     <h2>Security</h2>
     <h5>Password</h5>
-    <form method="post">
+    @if (StatusMessage == "Succeeded")
+    {
+        <div class="alert alert-success" role="alert">
+            Password was updated!
+        </div>
+    }
+    else if (StatusMessage == "Error")
+    {
+        <div class="alert alert-danger" role="alert">
+            Something went wrong!
+        </div>
+    }
+    <EditForm FormName="updatepassword" Model="passwordForm" OnValidSubmit="UpdatePassword" method="post" novalidate>
+        <DataAnnotationsValidator />
         <div class="current-password">
-
             <label>Current password</label>
-            <input>
-            <span></span>
+            <InputText @bind-Value="passwordForm.Password" type="password" placeholder="**********" />
+            <ValidationMessage For="@(() => passwordForm.Password)" />
              
         </div>
         <div class="new-confirm-password">
             <div class="new-password">
 
-                <label>New passworddd</label>
-                <input>
-                <span></span>
+                <label>New password</label>
+                <InputText @bind-Value="passwordForm.NewPassword" type="password" placeholder="**********" />
+                <ValidationMessage For="@(() => passwordForm.NewPassword)" />
                     
             </div>
             <div class="confirm-password">
 
                 <label>Confirm new password</label>
-                <input>
-                <span></span>
+                <InputText @bind-Value="passwordForm.ConfirmPassword" type="password" placeholder="**********" />
+                <ValidationMessage For="@(() => passwordForm.ConfirmPassword)" />
                     
             </div>
         </div>
@@ -37,20 +57,145 @@
             <button id="cancel" class="btn-theme" type="reset"> Cancel</button>
             <button class="btn-theme" type="submit">Change password </button>
         </div>
-    </form>
+    </EditForm>
 
-    <form method="post" >
+    <EditForm FormName="deleteform" Model="deleteForm" OnValidSubmit="DeleteUser" method="post" novalidate>
+        <DataAnnotationsValidator />
         <div class="delete">
             <h5>Delete account</h5>
             <p>When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
-            @* InputCheckbox @bind-Value=""/> *@
+            <InputCheckbox @bind-Value="deleteForm.Delete"/>
             <label>Yes, I want to delete my account.</label>
-            <span></span>
+            <span>@CheckBoxErrorMessage</span>
             <button class="btn-theme button" type="submit">Delete </button>
         </div>
-    </form>
+    </EditForm>
 </div>
 
 @code {
+
+    private ApplicationUser userDetails = default!;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+
+    [SupplyParameterFromForm]
+    public PasswordForm passwordForm { get; set; } = new();
+
+    [SupplyParameterFromForm]
+    public Deleteform deleteForm { get; set; } = new();
+
+    public string StatusMessage { get; set; } = "";
+
+    public string CheckBoxErrorMessage { get; set; } = "";
+
+
+    private async Task UpdatePassword(EditContext editContext)
+    {
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userDetails != null)
+            {
+
+
+                var result = await UserManager.ChangePasswordAsync(userDetails, passwordForm.Password, passwordForm.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    StatusMessage = "Succeeded";
+                }
+                else
+                {
+                    StatusMessage = "Error";
+                }
+            }
+
+        }
+
+    }
+
+    private async Task DeleteUser(EditContext editContext)
+    {
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+
+            if (userDetails != null)
+            {
+                if (deleteForm.Delete)
+                {
+                    var claims = await usermanager.GetClaimsAsync(userDetails);
+
+                    await usermanager.RemoveClaimsAsync(userDetails, claims);
+
+                    var result = await usermanager.DeleteAsync(userDetails);
+
+                    if (result.Succeeded)
+                    {
+                        
+                        await SignInManager.SignOutAsync();
+                    }
+                    else
+                    {
+                        StatusMessage = "Error";
+                    }
+                }
+                CheckBoxErrorMessage = "You must check box.";
+
+            }
+
+        }
+    }
+
+
+
+    public class PasswordForm
+    {
+        [DataType(DataType.Password)]
+        [Display(Name = "Current password", Order = 0)]
+        [Required(ErrorMessage = "Invalid password")]
+        public string Password { get; set; } = null!;
+
+        [DataType(DataType.Password)]
+        [Display(Name = "New password", Order = 1)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Invalid password")]
+        public string NewPassword { get; set; } = null!;
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password",Order = 2)]
+        [Compare(nameof(NewPassword), ErrorMessage = "Password does not match")]
+        public string ConfirmPassword { get; set; } = null!;
+
+    };
+
+    public class Deleteform
+    {
+        [Display(Name = "Yes, I want to delete my account", Order = 1)]
+        [Required(ErrorMessage = "You must check box.")]
+        public bool Delete { get; set; } = false;
+    }
+
+
 
 }

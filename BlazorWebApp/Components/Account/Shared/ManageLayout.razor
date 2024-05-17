@@ -2,14 +2,21 @@
 @layout AccountLayout
 
 
+
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using BlazorWebApp.Data
+@using Microsoft.EntityFrameworkCore
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+
+@inject UserManager<ApplicationUser> usermanager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
 
 
 <section id="account">
@@ -50,33 +57,40 @@
 
 
 @code {
-    private ApplicationUser user = default!;
+
+
+    private ApplicationUser userDetails = new ApplicationUser();
 
     [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
-   
-    private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
     private ProfileModel profileModel { get; set; } = new();
 
 
     protected override async Task OnInitializedAsync()
     {
-        if (HttpContext != null)
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity!.IsAuthenticated)
         {
-            user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            if (user != null)
+            var userId = usermanager.GetUserId(user);
+
+            userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userDetails != null)
             {
-                profileModel.Email = user.Email;
-                profileModel.FirstName = user.FirstName;
-                profileModel.LastName = user.LastName;
+                profileModel.FirstName = userDetails.FirstName;
+                profileModel.LastName = userDetails.LastName;
+                profileModel.Email = userDetails.Email;
+               
             }
         }
-
-
 
     }
 

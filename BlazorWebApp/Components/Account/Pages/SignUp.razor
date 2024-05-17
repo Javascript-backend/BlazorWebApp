@@ -13,6 +13,18 @@
                 <p>Already have an account?<NavLink href="/signin"> Sign in here.</NavLink></p>
             </div>
 
+            @if(StatusMessage == "Error")
+            {
+                <div class="alert alert-danger" role="alert">
+                    Something went wrong!
+                </div>
+            }
+            else if(StatusMessage == "Email") {
+                <div class="alert alert-danger" role="alert">
+                    A user with same email address already exists!
+                </div>
+            }
+
             <EditForm FormName="signup" Model="signupForm" OnValidSubmit="RegisterUser" method="post" asp-route-returnUrl="@ReturnUrl" novalidate>
                 <DataAnnotationsValidator />
                 <div class="name">
@@ -51,13 +63,21 @@
                     <label >I agree to the <a href="">Terms</a> & <a href="">Conditions</a></label>
                     <ValidationMessage For="@(() => signupForm.TermAndConditions)" />
                 </div>
-                <button class="btn-theme" type="submit">Sign up</button>
+                @if (isLoading)
+                {
+                    <button class="btn-theme" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                }
+                else
+                {
+                    <button class="btn-theme" type="submit">Sign up</button>
+                }
+                
             </EditForm>
 
-            @if (!string.IsNullOrEmpty(StatusMessage))
-            {
-                <p>@StatusMessage</p>
-            }
+
         </div>
     </div>
 </section>
@@ -65,6 +85,7 @@
 
 @code {
 
+    private bool isLoading = false;
 
     [SupplyParameterFromForm]
     public SignupFormModel signupForm { get; set; } = new();
@@ -78,21 +99,26 @@
     [SupplyParameterFromQuery]
     private string? Email { get; set; }
 
+    private HttpResponseMessage ApiReponse { get; set; } = new();
+
     private async Task RegisterUser(EditContext editContext)
     {
         try
         {
+            isLoading = true;
+
             var alreadyExists = await UserManager.FindByEmailAsync(signupForm.Email);
 
             if(alreadyExists != null)
             {
-                StatusMessage = "An account with this e-mail address already exists.";
+                StatusMessage = "Email";
+                return;
             }
 
 
-                var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/SignUp?code={_configuration["ApiKeySignUp"]}", signupForm);
+            var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/SignUp?code={_configuration["ApiKeySignUp"]}", signupForm);
 
-            if(result.IsSuccessStatusCode)
+            if (result.IsSuccessStatusCode)
             {
                 if (UserManager.Options.SignIn.RequireConfirmedAccount)
                 {
@@ -101,17 +127,17 @@
                         new() { ["email"] = signupForm.Email, ["returnUrl"] = ReturnUrl });
                 }
 
-                // var user = UserManager.FindByEmailAsync(signupForm.Email);
-
-                // await SignInManager.SignInAsync(user, isPersistent: false);
-                // RedirectManager.RedirectTo(ReturnUrl);
             }
 
-            StatusMessage = "Could not create user";
+            StatusMessage = "Error";
         }
         catch
         {
-            StatusMessage = "Something went wrong";
+            StatusMessage = "Error";
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 

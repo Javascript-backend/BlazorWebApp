@@ -21,9 +21,14 @@
             </div>
             <EditForm Model="formModel" method="post" OnValidSubmit="LoginUser" FormName="login" novalidate>
                 <DataAnnotationsValidator />
-                <div class="error-message">
-                    <StatusMessage Message="@errorMessage" />
-                </div>
+
+                @if(errorMessage != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @errorMessage
+                    </div>
+                }
+
                 <label class="label-block">Email</label>
                 <InputText @bind-Value="formModel.Email" type="email" class="input-block" placeholder="Enter your email address"/>
                 <label class="label-block">Password</label>
@@ -94,7 +99,7 @@
         }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            errorMessage = "Incorrect email address or password.";
         }
     }
 
