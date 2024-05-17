@@ -1,58 +1,90 @@
 ﻿@page "/Account/manage"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+
+@inject UserManager<ApplicationUser> usermanager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
 
 <PageTitle>Details</PageTitle>
 
 <div class="basic-info">
     <h2>Account Details</h2>
     <h5>Basic Info</h5>
-    <form method="post" asp-controller="Account" asp-action="Details" novalidate>
+    <EditForm FormName="basic-info" Model="basicInfoForm" OnValidSubmit="UpdateBasicInfo" method="post" novalidate>
+         <DataAnnotationsValidator />
 
-        <div class="name">
-            <div class="firstname">
-                <label>First name</label>
-                <input>
-                <span></span>
+        @if(StatusMessage == "Succeeded")
+        {
+            <div class="alert alert-success" role="alert">
+                 User was updated!
             </div>
-            <div class="lastname">
-                <label>Last name</label>
-                <input>
-                <span></span>
+         }
+         else if(StatusMessage == "Error") {
+        <div class="alert alert-danger" role="alert">
+            Something went wrong!
+        </div>
+         }
+
+        @if (userDetails == null)
+        {
+            <p>@StatusMessage</p>
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-        </div>
-        <div class="email-phone">
+        }
+        else
+        {
+            <div class="name">
+                <div class="firstname">
+                    <label>First name</label>
+                    <InputText @bind-Value="userDetails.FirstName" />
+                    <ValidationMessage For="@(() => basicInfoForm.FirstName)" />
+                </div>
+                <div class="lastname">
+                    <label>Last name</label>
+                    <InputText @bind-Value="userDetails.LastName" />
+                    <ValidationMessage For="@(() => basicInfoForm.LastName)" />
+                </div>
+            </div>
+            <div class="email-phone">
 
-            <div class="email">
+                <div class="email">
 
-                <label>Email address</label>
-                <input>
-                <span></span>
+                    <label>Email address</label>
+                    <InputText @bind-Value="userDetails.Email" />
+                    <ValidationMessage For="@(() => basicInfoForm.Email)" />
+
+                </div>
+                <div class="phone">
+
+                    <label>Phone</label>
+                    <InputText @bind-Value="userDetails.PhoneNumber" />
+                    <ValidationMessage For="@(() => basicInfoForm.PhoneNumber)" />
+
+                </div>
+            </div>
+
+            <div class="bio">
+
+                <label>Biography</label>
+                <InputTextArea @bind-Value="userDetails.Biography" rows="4"> </InputTextArea>
 
             </div>
-            <div class="phone">
 
-                <label>Phone</label>
-                <input>
-                <span></span>
-
+            <div class="buttons">
+                <button id="cancel" class="btn-theme" type="reset"> Cancel</button>
+                <button class="btn-theme" type="submit">Save changes </button>
             </div>
-        </div>
+        }
 
-        <div class="bio">
-
-            <label>Biography</label>
-            <textarea rows="4"> </textarea>
-
-        </div>
-
-        <div class="buttons">
-            <button id="cancel" class="btn-theme" type="reset"> Cancel</button>
-            <button class="btn-theme" type="submit">Save changes </button>
-        </div>
-    </form>
+    </EditForm>
 </div>
 <div class="address">
     <h5>Address</h5>
-    <form method="post" novalidate>
+    <EditForm FormName="addressform" Model="addressForm" OnValidSubmit="UpdateAddressInfo" method="post" novalidate>
 
         <div class="Address-line-1">
             <div class="Address1">
@@ -86,51 +118,141 @@
             <button id="cancel" class="btn-theme" type="reset">Cancel </button>
             <button class="btn-theme" type="submit">Save changes</button>
         </div>
-    </form>
+    </EditForm>
 </div>
 
 
+@code {
 
-@*  @code {
-    private ApplicationUser user = default!;
-    private string? username;
-    private string? phoneNumber;
+    private ApplicationUser userDetails = new ApplicationUser();
+
+    private ApplicationUser updateDetails = new ApplicationUser();
 
     [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    public AddressForm addressForm { get; set; } = new();
+
+    [SupplyParameterFromForm]
+    public BasicInfoForm basicInfoForm { get; set; } = new();
+
+    public string StatusMessage { get; set; } = "";
+
+
+    private async Task UpdateAddressInfo(EditContext editContext)
+    {
+
+    }
+
+    private async Task UpdateBasicInfo(EditContext editContext)
+    {
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            updateDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userDetails != null)
+            {
+                updateDetails.FirstName = userDetails.FirstName;
+                updateDetails.LastName = userDetails.LastName;
+                updateDetails.PhoneNumber = userDetails.PhoneNumber;
+                updateDetails.Email = userDetails.Email;
+                updateDetails.Biography = userDetails.Biography;
+
+                var result = await usermanager.UpdateAsync(updateDetails);
+
+                if (result.Succeeded)
+                {
+                    StatusMessage = "Succeeded";
+                }
+                else
+                {
+                    StatusMessage = "Error";
+                }
+            }
+
+        }
+
+
+
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
 
-        Input.PhoneNumber ??= phoneNumber;
-    }
+        var user = (await AuthenticationState).User;
 
-    private async Task OnValidSubmitAsync()
-    {
-        if (Input.PhoneNumber != phoneNumber)
+        if (user.Identity!.IsAuthenticated)
         {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+            if(userDetails != null)
             {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+
             }
         }
 
-        await SignInManager.RefreshSignInAsync(user);
-        RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
+
     }
 
-    private sealed class InputModel
+
+    public class BasicInfoForm
     {
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
-    }
-} *@
+        [DataType(DataType.Text)]
+        [Display(Name = "First name", Prompt = " Enter your first name", Order = 0)]
+        public string FirstName { get; set; } = null!;
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last name", Prompt = " Enter your last name", Order = 1)]
+        public string LastName { get; set; } = null!;
+
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email-address", Prompt = " Enter your email-address", Order = 2)]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = null!;
+
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Password",  Order = 3)]
+        public string PhoneNumber { get; set; } = null!;
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Confirm password", Order = 4)]
+        public string Biography { get; set; } = null!;
+
+    };
+
+    public class AddressForm
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "First name",Order = 0)]
+        public string AddressLine1 { get; set; } = null!;
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last name",Order = 1)]
+        public string AddressLine2 { get; set; } = null!;
+    };
+
+
+
+}
+
+
  

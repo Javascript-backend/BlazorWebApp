@@ -10,6 +10,8 @@ public class ApplicationUser : IdentityUser
 
     public string? LastName { get; set; }
 
+    public string? Biography { get; set; }
+
     public string? AddressId { get; set; }
 
     public UserAddress? Address { get; set; }

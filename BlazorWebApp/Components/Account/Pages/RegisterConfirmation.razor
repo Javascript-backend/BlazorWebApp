@@ -25,7 +25,19 @@
                         <InputText @bind-Value="registerCodeModel.Code"  />
                     </div>
 
-                <button class="btn-theme" type="submit">Verify Code</button>
+                @if (isLoading)
+                {
+                    <button class="btn-theme" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Loading...
+                    </button>
+                }
+                else
+                {
+                    <button class="btn-theme" type="submit">Verify Code</button>
+                }
+
+                
             </EditForm>
 
             @if (!string.IsNullOrEmpty(StatusMessage))
@@ -38,6 +50,8 @@
 
 
 @code {
+
+    private bool isLoading = false;
 
     [SupplyParameterFromForm]
     public RegisterCodeModel registerCodeModel { get; set; } = new();
@@ -53,21 +67,25 @@
 
     public async Task RegisterCode(EditContext editContext)
     {
-            if(Email != null)
-            {
-                registerCodeModel.Email = Email;
-            }
+        isLoading = true;
+
+        if(Email != null)
+        {
+            registerCodeModel.Email = Email;
+        }
 
         var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/Verify?code={_configuration["ApiKeyVerify"]}", registerCodeModel);
 
-            if(result.IsSuccessStatusCode)
-            {
-                RedirectManager.RedirectTo("/signin");
-            }
+        if(result.IsSuccessStatusCode)
+        {
+            RedirectManager.RedirectTo("/signin");
+        }
 
-            StatusMessage = "Failed to verify code."; 
+        StatusMessage = "Failed to verify code."; 
 
         registerCodeModel = new RegisterCodeModel();
+
+        isLoading = false;
     }
 
 
