@@ -1,5 +1,6 @@
 ﻿@page "/Account/manage"
 @using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
 @rendermode InteractiveServer
 
 
@@ -7,6 +8,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 @inject IServiceProvider ServiceProvider
+@inject IConfiguration _configuration
 
 <PageTitle>Details</PageTitle>
 
@@ -85,32 +87,43 @@
 <div class="address">
     <h5>Address</h5>
     <EditForm FormName="addressform" Model="addressForm" OnValidSubmit="UpdateAddressInfo" method="post" novalidate>
-
+        <DataAnnotationsValidator />
+        @if (AddressStatusMessage == "Succeeded")
+        {
+            <div class="alert alert-success" role="alert">
+                Address was updated!
+            </div>
+        }
+        else if (AddressStatusMessage == "Error")
+        {
+            <div class="alert alert-danger" role="alert">
+                Something went wrong!
+            </div>
+        }
         <div class="Address-line-1">
             <div class="Address1">
                 <label>Address line 1</label>
-                <input>
-                <span></span>
+                <InputText @bind-Value="addressForm.AddressLine_1"/>
+                <ValidationMessage For="@(() => addressForm.AddressLine_1)" />
             </div>
         </div>
         <div class="Address-line-2">
             <div class="Address2">
                 <label>Address line 2 (optional)</label>
-                <input >
-                <span ></span>
+                <InputText @bind-Value="addressForm.AddressLine_2" />
             </div>
         </div>
 
         <div class="Postal-code-city">
             <div class="postal-code">
                 <label>Postal code</label>
-                <input >
-                <span></span>
+                <InputText @bind-Value="addressForm.PostalCode" />
+                <ValidationMessage For="@(() => addressForm.PostalCode)" />
             </div>
             <div class="city">
                 <label>City</label>
-                <input >
-                <span ></span>
+                <InputText @bind-Value="addressForm.City" />
+                <ValidationMessage For="@(() => addressForm.City)" />
             </div>
         </div>
 
@@ -128,6 +141,8 @@
 
     private ApplicationUser updateDetails = new ApplicationUser();
 
+    private AddressRequest addressRequest = new AddressRequest();
+
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
@@ -140,11 +155,40 @@
 
     public string StatusMessage { get; set; } = "";
 
+    public string AddressStatusMessage { get; set; } = "";
+
 
     private async Task UpdateAddressInfo(EditContext editContext)
     {
+        var user = (await AuthenticationState).User;
 
+        if (user.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            if(userId != null)
+            {
+                addressForm.UserId = userId;
+
+                var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/UpdateAddress?code={_configuration["ApiKeyUpdateAddress"]}", addressForm);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    AddressStatusMessage = "Succeeded";
+                }
+                else
+                {
+                    AddressStatusMessage = "Error";
+                }
+            }
+        }
     }
+
+
 
     private async Task UpdateBasicInfo(EditContext editContext)
     {
@@ -202,17 +246,29 @@
             var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var userId = usermanager.GetUserId(user);
-            userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-
-            if(userDetails != null)
+            if(userId !=null)
             {
+                userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+                addressRequest.UserId = userId;
 
+                var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/GetAddress?code={_configuration["ApiKeyGetAddress"]}", addressRequest);
+
+                if(result.IsSuccessStatusCode)
+                {
+                    var address = await result.Content.ReadAsStringAsync();
+                    addressForm = JsonConvert.DeserializeObject<AddressForm>(address)!;
+                }
             }
+
         }
 
 
     }
 
+    public class AddressRequest
+    {
+        public string UserId { get; set; } = null!;
+    }
 
     public class BasicInfoForm
     {
@@ -241,13 +297,29 @@
 
     public class AddressForm
     {
-        [DataType(DataType.Text)]
-        [Display(Name = "First name",Order = 0)]
-        public string AddressLine1 { get; set; } = null!;
 
+        public string? UserId { get; set; }
+
+        [Display(Name = "Address line 1")]
         [DataType(DataType.Text)]
-        [Display(Name = "Last name",Order = 1)]
-        public string AddressLine2 { get; set; } = null!;
+        [Required(ErrorMessage = "Address is required")]
+        public string AddressLine_1 { get; set; } = null!;
+
+
+        [Display(Name = "Address line 2 (optional)", Order = 1)]
+        [DataType(DataType.Text)]
+        public string? AddressLine_2 { get; set; }
+
+
+        [Display(Name = "Postal code")]
+        [DataType(DataType.PostalCode)]
+        [Required(ErrorMessage = "Postal code is required")]
+        public string PostalCode { get; set; } = null!;
+
+
+        [Display(Name = "City")]
+        [Required(ErrorMessage = "City is required")]
+        public string City { get; set; } = null!;
     };
 
 

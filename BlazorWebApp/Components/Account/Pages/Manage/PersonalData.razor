@@ -153,15 +153,19 @@
 
                     if (result.Succeeded)
                     {
-                        
-                        await SignInManager.SignOutAsync();
+
+                        NavigationManager.NavigateTo("/");
                     }
                     else
                     {
-                        StatusMessage = "Error";
+                        StatusMessage = "Error something went wrong";
                     }
                 }
-                CheckBoxErrorMessage = "You must check box.";
+                else
+                {
+                    CheckBoxErrorMessage = "You must check box.";
+                }
+                
 
             }
 
