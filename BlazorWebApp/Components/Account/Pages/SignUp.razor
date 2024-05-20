@@ -24,6 +24,13 @@
                     A user with same email address already exists!
                 </div>
             }
+            else if(StatusMessage == "Agree")
+            {
+                <div class="alert alert-danger" role="alert">
+                    You must agree to the term &conditions!
+                </div>
+               
+            }
 
             <EditForm FormName="signup" Model="signupForm" OnValidSubmit="RegisterUser" method="post" asp-route-returnUrl="@ReturnUrl" novalidate>
                 <DataAnnotationsValidator />
@@ -105,31 +112,36 @@
     {
         try
         {
-            isLoading = true;
-
-            var alreadyExists = await UserManager.FindByEmailAsync(signupForm.Email);
-
-            if(alreadyExists != null)
+            if (signupForm.TermAndConditions)
             {
-                StatusMessage = "Email";
-                return;
-            }
+                isLoading = true;
 
+                var alreadyExists = await UserManager.FindByEmailAsync(signupForm.Email);
 
-            var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/SignUp?code={_configuration["ApiKeySignUp"]}", signupForm);
-
-            if (result.IsSuccessStatusCode)
-            {
-                if (UserManager.Options.SignIn.RequireConfirmedAccount)
+                if (alreadyExists != null)
                 {
-                    RedirectManager.RedirectTo(
-                        "Account/RegisterConfirmation",
-                        new() { ["email"] = signupForm.Email, ["returnUrl"] = ReturnUrl });
+                    StatusMessage = "Email";
+                    return;
                 }
 
+
+                var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/SignUp?code={_configuration["ApiKeySignUp"]}", signupForm);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    if (UserManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        RedirectManager.RedirectTo(
+                            "Account/RegisterConfirmation",
+                            new() { ["email"] = signupForm.Email, ["returnUrl"] = ReturnUrl });
+                    }
+
+                }
+
+                StatusMessage = "Error";
             }
 
-            StatusMessage = "Error";
+            StatusMessage = "Agree";
         }
         catch
         {
@@ -140,7 +152,6 @@
             isLoading = false;
         }
     }
-
 
     public class SignupFormModel
     {

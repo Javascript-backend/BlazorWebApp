@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +16,7 @@
     <HeadOutlet />
 </head>
 
-<body>
+<body class="@themeMode">
 
 
     <Routes />
@@ -26,5 +29,17 @@
 
 @code {
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private string themeMode { get; set; } = "light";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var themeMode = HttpContext.Request.Cookies["ThemeMode"] ?? "light";
+        var isDark = (themeMode == "dark") ? true : false;
+
+        await Task.CompletedTask;
+    }
 }
 
