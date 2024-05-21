@@ -1,23 +1,33 @@
 ﻿@page "/Account/Notifications"
+@using Microsoft.EntityFrameworkCore
+
+@inject UserManager<ApplicationUser> usermanager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
+@inject IConfiguration _configuration
 
 
 <div class="settings">
     <h2>Notifications</h2>
-    <form method="post">
-        <div class="email">
+    <EditForm FormName="settingsform" Model="settingsForm" OnValidSubmit="UpdateSettings"  method="post" novalidate>
+
+
+
+@*         <div class="email">
             <label>Preferred email for notifications</label>
             <input placeholder="example@gmail.com" />
-        </div>
+        </div> *@
 
         <div class="switches">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <InputCheckbox @bind-Value="@settingsForm.Subscribe"  class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
                 <h6>Subscribe to Newsletter</h6>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</label>
             </div>
 
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                <InputCheckbox  @bind-Value="@settingsForm.Theme"  class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
                 <h6>Use Dark Mode Theme in Application</h6>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Tortor massa porttitor enim tristique neque fermentum sed.</label>
             </div>
@@ -28,5 +38,122 @@
             <button id="cancel" class="btn-theme" type="reset">Cancel</button>
             <button class="btn-theme" type="submit">Save changes </button>
         </div>
-    </form>
+    </EditForm>
 </div>
+
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+
+    SettingsForm settingsForm = new SettingsForm();
+
+    SubscribeFormModel subscribeForm = new SubscribeFormModel();
+
+    public string Email { get; set; } = null!;
+
+    [CascadingParameter]
+
+    private HttpContext context { get; set; } = default!;
+
+
+    private async Task UpdateSettings(EditContext editContext)
+    {
+        if(settingsForm.Theme)
+        {
+            var themeOption = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(60),
+
+            };
+
+            context.Response.Cookies.Append("ThemeMode", "dark", themeOption);
+
+        }
+        else
+        {
+            var option = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(60),
+
+            };
+
+            context.Response.Cookies.Append("ThemeMode", "light", option);
+
+
+        }
+        if(settingsForm.Subscribe)
+        {
+            var user = (await AuthenticationState).User;
+
+            if (user.Identity!.IsAuthenticated)
+            {
+                await using var scope = ServiceProvider.CreateAsyncScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                var userId = usermanager.GetUserId(user);
+                if(userId != null)
+                {
+                    var updateDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+                    if(updateDetails != null)
+                    {
+                        Email = updateDetails.Email!;
+
+                        subscribeForm.Email = updateDetails.Email!;
+
+                        var result = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Subscribe?code={_configuration["ApikeyNewsletter"]}", subscribeForm);
+
+                        if(result.IsSuccessStatusCode)
+                        {
+
+
+
+                        }
+
+
+                    }
+                }
+
+            }
+        }
+        NavigationManager.Refresh();
+    }
+
+    protected override void OnInitialized()
+    {
+
+
+        var themeMode = context.Request.Cookies["ThemeMode"] ?? "light";
+
+        if (themeMode == "dark")
+        {
+            settingsForm.Theme = true;
+        }
+        // else
+        // {
+        //     settingsForm.Theme = false;
+        // }
+    }
+
+   
+
+    public class SettingsForm
+    {
+        public bool Subscribe { get; set; } = false;
+
+        public bool Theme { get; set; } = false;
+    };
+
+    public class SubscribeFormModel
+    {
+
+        public string Email { get; set; } = null!;
+
+    }
+}

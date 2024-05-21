@@ -32,12 +32,11 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    private string themeMode { get; set; } = "light";
+    private string themeMode { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
-        var themeMode = HttpContext.Request.Cookies["ThemeMode"] ?? "light";
-        var isDark = (themeMode == "dark") ? true : false;
+        themeMode = HttpContext.Request.Cookies["ThemeMode"] ?? "light";
 
         await Task.CompletedTask;
     }

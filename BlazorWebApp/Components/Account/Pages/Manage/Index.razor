@@ -178,6 +178,10 @@
 
                 if (result.IsSuccessStatusCode)
                 {
+
+                    var address = await result.Content.ReadAsStringAsync();
+                    addressForm = JsonConvert.DeserializeObject<AddressForm>(address)!;
+
                     AddressStatusMessage = "Succeeded";
                 }
                 else
@@ -203,27 +207,31 @@
             var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var userId = usermanager.GetUserId(user);
-            updateDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (userDetails != null)
+            if(userId != null)
             {
-                updateDetails.FirstName = userDetails.FirstName;
-                updateDetails.LastName = userDetails.LastName;
-                updateDetails.PhoneNumber = userDetails.PhoneNumber;
-                updateDetails.Email = userDetails.Email;
-                updateDetails.Biography = userDetails.Biography;
+                updateDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
 
-                var result = await usermanager.UpdateAsync(updateDetails);
+                if (userDetails != null)
+                {
+                    updateDetails.FirstName = userDetails.FirstName;
+                    updateDetails.LastName = userDetails.LastName;
+                    updateDetails.PhoneNumber = userDetails.PhoneNumber;
+                    updateDetails.Email = userDetails.Email;
+                    updateDetails.Biography = userDetails.Biography;
 
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Succeeded";
-                }
-                else
-                {
-                    StatusMessage = "Error";
+                    var result = await usermanager.UpdateAsync(updateDetails);
+
+                    if (result.Succeeded)
+                    {
+                        StatusMessage = "Succeeded";
+                    }
+                    else
+                    {
+                        StatusMessage = "Error";
+                    }
                 }
             }
+
 
         }
 
@@ -246,7 +254,7 @@
             var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var userId = usermanager.GetUserId(user);
-            if(userId !=null)
+            if(userId != null)
             {
                 userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
                 addressRequest.UserId = userId;
