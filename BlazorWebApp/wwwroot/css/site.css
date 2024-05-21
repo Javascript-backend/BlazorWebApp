@@ -240,6 +240,9 @@ form .input-validation-error {
 .dark {
   background-color: #0B0F19 !important;
 }
+.dark .form-check-input {
+  background-color: white;
+}
 .dark .appstore-dark {
   display: block;
 }

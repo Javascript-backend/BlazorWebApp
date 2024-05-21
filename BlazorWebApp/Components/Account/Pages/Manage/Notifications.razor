@@ -12,8 +12,6 @@
     <h2>Notifications</h2>
     <EditForm FormName="settingsform" Model="settingsForm" OnValidSubmit="UpdateSettings"  method="post" novalidate>
 
-
-
 @*         <div class="email">
             <label>Preferred email for notifications</label>
             <input placeholder="example@gmail.com" />
@@ -26,11 +24,12 @@
                 <label class="form-check-label" for="flexSwitchCheckDefault">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</label>
             </div>
 
+ 
             <div class="form-check form-switch">
-                <InputCheckbox  @bind-Value="@settingsForm.Theme"  class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                <InputCheckbox @bind-Value="@settingsForm.Theme" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
                 <h6>Use Dark Mode Theme in Application</h6>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Tortor massa porttitor enim tristique neque fermentum sed.</label>
-            </div>
+            </div>            
         </div>
 
 
@@ -48,8 +47,7 @@
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
-
-    SettingsForm settingsForm = new SettingsForm();
+    public SettingsForm settingsForm = new SettingsForm();
 
     SubscribeFormModel subscribeForm = new SubscribeFormModel();
 
@@ -59,10 +57,14 @@
 
     private HttpContext context { get; set; } = default!;
 
+    public string themeMode = "";
+
+
+
 
     private async Task UpdateSettings(EditContext editContext)
     {
-        if(settingsForm.Theme)
+        if(themeMode == "light")
         {
             var themeOption = new CookieOptions
             {
@@ -127,21 +129,16 @@
 
     protected override void OnInitialized()
     {
-
-
-        var themeMode = context.Request.Cookies["ThemeMode"] ?? "light";
-
+        themeMode = context.Request.Cookies["ThemeMode"] ?? "light";
         if (themeMode == "dark")
-        {
             settingsForm.Theme = true;
-        }
-        // else
-        // {
-        //     settingsForm.Theme = false;
-        // }
+
+        
     }
 
-   
+
+
+
 
     public class SettingsForm
     {
