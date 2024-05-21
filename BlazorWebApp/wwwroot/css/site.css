@@ -240,9 +240,6 @@ form .input-validation-error {
 .dark {
   background-color: #0B0F19 !important;
 }
-.dark .form-check-input {
-  background-color: white;
-}
 .dark .appstore-dark {
   display: block;
 }
@@ -2725,7 +2722,6 @@ footer .container .social-media i:hover {
   padding-left: 12px;
 }
 .settings form .buttons {
-  margin-top: 240px;
   display: flex;
   gap: 30px;
   transition: all 0.25s ease-in-out;

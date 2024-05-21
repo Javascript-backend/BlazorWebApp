@@ -10,34 +10,71 @@
 
 <div class="settings">
     <h2>Notifications</h2>
-    <EditForm FormName="settingsform" Model="settingsForm" OnValidSubmit="UpdateSettings"  method="post" novalidate>
 
-@*         <div class="email">
-            <label>Preferred email for notifications</label>
-            <input placeholder="example@gmail.com" />
-        </div> *@
+    <EditForm FormName="updateSubscribe" Model="settingsForm" OnValidSubmit="UpdateSubscribe" method="post" novalidate>
+
+        @if (SubscribeMessage == "Subscribed")
+        {
+            <div class="alert alert-success" role="alert">
+                You have been subscribed!
+            </div>
+        }
+        else if (SubscribeMessage == "Unsubscribed")
+        {
+            <div class="alert alert-danger" role="alert">
+                You have been unsubscribed!
+            </div>
+        }
+
 
         <div class="switches">
             <div class="form-check form-switch">
-                <InputCheckbox @bind-Value="@settingsForm.Subscribe"  class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"/>
+                <InputCheckbox @bind-Value="@settingsForm.Subscribe" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
                 <h6>Subscribe to Newsletter</h6>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</label>
             </div>
 
- 
+        </div>
+
+        <div class="buttons">
+            @if(settingsForm.Subscribe)
+            {
+                <button class="btn-theme" type="submit">Unsubscribe </button>
+            }
+            else
+            {
+                <button class="btn-theme" type="submit">Subscribe </button>
+            }
+        </div>
+
+     </EditForm>
+
+    <EditForm FormName="updateTheme" Model="settingsForm" OnValidSubmit="UpdateTheme" method="post" novalidate>
+
+        <div class="switches">
+
             <div class="form-check form-switch">
                 <InputCheckbox @bind-Value="@settingsForm.Theme" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
                 <h6>Use Dark Mode Theme in Application</h6>
                 <label class="form-check-label" for="flexSwitchCheckDefault">Tortor massa porttitor enim tristique neque fermentum sed.</label>
-            </div>            
+            </div>
         </div>
-
 
         <div class="buttons">
-            <button id="cancel" class="btn-theme" type="reset">Cancel</button>
-            <button class="btn-theme" type="submit">Save changes </button>
+            @if(themeMode == "light")
+            {
+                <button class="btn-theme" type="submit">Apply dark theme </button>
+            }
+            else
+            {
+                <button class="btn-theme" type="submit">Apply light theme </button>
+            }
+            
         </div>
+
     </EditForm>
+
+
 </div>
 
 
@@ -45,13 +82,14 @@
 @code {
 
     [CascadingParameter]
+
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
     public SettingsForm settingsForm = new SettingsForm();
 
     SubscribeFormModel subscribeForm = new SubscribeFormModel();
 
-    public string Email { get; set; } = null!;
+    private ApplicationUser userEmail = new ApplicationUser();
 
     [CascadingParameter]
 
@@ -59,18 +97,17 @@
 
     public string themeMode = "";
 
+    public string SubscribeMessage = "";
 
-
-
-    private async Task UpdateSettings(EditContext editContext)
+    private async Task UpdateTheme()
     {
-        if(themeMode == "light")
+        if (themeMode == "light")
         {
             var themeOption = new CookieOptions
-            {
-                Expires = DateTime.Now.AddDays(60),
+                {
+                    Expires = DateTime.Now.AddDays(60),
 
-            };
+                };
 
             context.Response.Cookies.Append("ThemeMode", "dark", themeOption);
 
@@ -78,62 +115,86 @@
         else
         {
             var option = new CookieOptions
-            {
-                Expires = DateTime.Now.AddDays(60),
+                {
+                    Expires = DateTime.Now.AddDays(60),
 
-            };
+                };
 
             context.Response.Cookies.Append("ThemeMode", "light", option);
 
 
         }
-        if(settingsForm.Subscribe)
-        {
-            var user = (await AuthenticationState).User;
-
-            if (user.Identity!.IsAuthenticated)
-            {
-                await using var scope = ServiceProvider.CreateAsyncScope();
-
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-                var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-                var userId = usermanager.GetUserId(user);
-                if(userId != null)
-                {
-                    var updateDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-                    if(updateDetails != null)
-                    {
-                        Email = updateDetails.Email!;
-
-                        subscribeForm.Email = updateDetails.Email!;
-
-                        var result = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Subscribe?code={_configuration["ApikeyNewsletter"]}", subscribeForm);
-
-                        if(result.IsSuccessStatusCode)
-                        {
 
 
 
-                        }
-
-
-                    }
-                }
-
-            }
-        }
-        NavigationManager.Refresh();
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
     }
 
-    protected override void OnInitialized()
+    private async Task UpdateSubscribe()
+    {
+
+        if (!settingsForm.Subscribe)
+        {
+
+            subscribeForm.Email = userEmail.Email!;
+
+            var result = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Subscribe?code={_configuration["ApikeyNewsletter"]}", subscribeForm);
+
+            if(result.IsSuccessStatusCode)
+            {
+                settingsForm.Subscribe = true;
+                SubscribeMessage = "Subscribed";
+            }
+        }
+        else
+        {
+            var unsubResult = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Unsubscribe?code={_configuration["ApiKeyUnsubcribe"]}", subscribeForm);
+
+            if(unsubResult.IsSuccessStatusCode)
+            {
+                settingsForm.Subscribe = false;
+                SubscribeMessage = "Unsubscribed";
+            }
+            
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
     {
         themeMode = context.Request.Cookies["ThemeMode"] ?? "light";
         if (themeMode == "dark")
             settingsForm.Theme = true;
 
-        
+
+        var user = (await AuthenticationState).User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(user);
+            if (userId != null)
+            {
+                userEmail = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+                if (userEmail != null)
+                {
+                    subscribeForm.Email = userEmail.Email!;
+
+                     var ApiResponse = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/GetSubscriber?code={_configuration["ApiKeyGetSubscriber"]}", subscribeForm);
+
+                    if(ApiResponse.IsSuccessStatusCode)
+                    {
+                        settingsForm.Subscribe = true;
+                    }
+
+
+                }
+            }
+        }
     }
 
 
