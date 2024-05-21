@@ -2722,7 +2722,6 @@ footer .container .social-media i:hover {
   padding-left: 12px;
 }
 .settings form .buttons {
-  margin-top: 240px;
   display: flex;
   gap: 30px;
   transition: all 0.25s ease-in-out;

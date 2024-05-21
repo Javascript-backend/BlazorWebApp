@@ -1,11 +1,9 @@
-
 .settings {
 
 
 
     @media (max-width: 1200px) {
         margin-top: 20px;
-
     }
 
     h2 {
@@ -78,7 +76,6 @@
 
 
         .buttons {
-            margin-top: 240px;
             display: flex;
             gap: 30px;
             transition: all 0.25s ease-in-out;
@@ -109,4 +106,3 @@
         }
     }
 }
-
