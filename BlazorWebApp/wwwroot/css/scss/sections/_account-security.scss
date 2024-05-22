@@ -1,152 +1,196 @@
 
+.blur {
+    filter: blur(5px);
+}
+
+.details {
+
+    position: relative;
+}
+
+
+
+.submitBox {
+    border: 1px solid black;
+    padding: 100px;
+    text-align: center;
+    z-index: 1;
+    position: absolute;
+    background-color: ghostwhite;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(-20px);
+
+
+    &:hover {
+        opacity: 1;
+        transform: translateY(0) !important;
+        transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    }
+
+    @media(max-width: 768px) {
+        padding: 20px;
+        top: 200px;
+    }
+
+    .title {
+
+
+        h1 {
+
+            @media(max-width: 768px) {
+                font-size: 16px !important;
+            }
+        }
+
+        h4 {
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
+
+
+        .code {
+
+            input {
+            }
+        }
+
+        .btn-theme {
+        }
+    }
+}
+
+
+
+
 .security-information {
     max-width: 856px;
 
-    @media (max-width: 992px) {
 
+    @media (max-width: 992px) {
         text-align: center;
         margin-top: 20px;
     }
-    h5 {
 
+
+    h5 {
         color: $theme;
     }
 
     form {
-
-        display:flex;
+        display: flex;
         flex-direction: column;
         gap: 20px;
 
         @media (max-width: 992px) {
-
             justify-content: center;
             align-items: center;
+        }
 
-            }
+        @media (max-width: 416px) {
 
-            @media (max-width: 416px) {
-                        
             input {
-
                 width: 320px;
             }
-            }
+        }
 
 
         label {
-                               
-            display:block;
+            display: block;
             color: #0B0F19;
             font-weight: 900;
         }
 
         .new-confirm-password {
-            display:flex;
+            display: flex;
             gap: 30px;
 
             @media (max-width: 992px) {
-
                 flex-direction: column;
             }
 
             input {
-
                 display: block;
                 width: 416px;
                 border-radius: 5px;
                 padding: 10px 10px;
                 border: 1px solid grey;
             }
-
-
         }
 
         .current-password {
 
 
             input {
-
                 display: block;
                 width: 416px;
                 border-radius: 5px;
                 padding: 10px 10px;
                 border: 1px solid grey;
             }
-
-
         }
 
 
         .buttons {
-
-            display:flex;
+            display: flex;
             gap: 30px;
             transition: all 0.25s ease-in-out;
             margin-bottom: 20px;
 
             @media (max-width: 416px) {
-                        
                 flex-direction: column;
-                }
+            }
 
             .btn-theme {
-
                 transition: all 0.25s ease-in-out;
             }
 
             #cancel {
-
                 background-color: #EFF2FC;
                 color: black;
                 transition: all 0.25s ease-in-out;
 
                 &:hover {
-
                     background-color: grey;
                 }
             }
         }
 
         .delete {
-
             border-top: 1px solid #c9cbda;
             padding-top: 20px;
 
             @media (max-width: 992px) {
-
-                            
-                }
+            }
 
             span {
-
-                display:block;
+                display: block;
             }
 
 
             label {
-                display:inline;
+                display: inline;
                 color: #565973;
                 margin-left: 10px;
             }
 
             .button {
-                            
-                display:block;
+                display: block;
                 background-color: #EF4444;
                 padding: 8px 40px;
                 margin-top: 30px;
 
                 @media (max-width: 992px) {
-
                     margin-left: auto;
                     margin-right: auto;
                 }
-
             }
         }
     }
 }
-
-            
-

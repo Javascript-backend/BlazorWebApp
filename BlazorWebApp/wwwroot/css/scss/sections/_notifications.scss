@@ -1,15 +1,22 @@
 .settings {
+        
+    margin-right: 130px;
 
 
+    @media (max-width: 1400px) {
+        margin-top: 20px;
+        margin-right: 50px;
+    }
 
     @media (max-width: 1200px) {
-        margin-top: 20px;
+        margin-right: 0;
     }
 
     h2 {
 
         @media (max-width: 1200px) {
             text-align: center;
+
         }
     }
 
@@ -47,6 +54,16 @@
         }
 
         .switches {
+
+            .form-switch {
+
+                @media(max-width: 768px) {
+                    padding: 0;
+                    margin: 0;
+                }
+
+            }
+
 
             .form-check {
 
