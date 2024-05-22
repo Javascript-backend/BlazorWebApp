@@ -2158,7 +2158,6 @@ footer .container .social-media i:hover {
 }
 
 .contact-image {
-  max-width: 1920px;
   width: 100%;
 }
 @media (max-width: 1400px) {
@@ -2405,6 +2404,48 @@ footer .container .social-media i:hover {
   background-color: #4C82F7;
 }
 
+.blur {
+  filter: blur(5px);
+}
+
+.details {
+  position: relative;
+}
+
+.submitBox {
+  border: 1px solid black;
+  padding: 100px;
+  text-align: center;
+  z-index: 1;
+  position: absolute;
+  background-color: ghostwhite;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.submitBox:hover {
+  opacity: 1;
+  transform: translateY(0) !important;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+@media (max-width: 768px) {
+  .submitBox {
+    padding: 20px;
+    top: 200px;
+  }
+}
+@media (max-width: 768px) {
+  .submitBox .title h1 {
+    font-size: 16px !important;
+  }
+}
+.submitBox form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
 .security-information {
   max-width: 856px;
 }
@@ -2664,9 +2705,18 @@ footer .container .social-media i:hover {
   width: 100%;
 }
 
-@media (max-width: 1200px) {
+.settings {
+  margin-right: 130px;
+}
+@media (max-width: 1400px) {
   .settings {
     margin-top: 20px;
+    margin-right: 50px;
+  }
+}
+@media (max-width: 1200px) {
+  .settings {
+    margin-right: 0;
   }
 }
 @media (max-width: 1200px) {
@@ -2700,6 +2750,12 @@ footer .container .social-media i:hover {
   border-radius: 5px;
   padding: 10px 10px;
   border: 1px solid grey;
+}
+@media (max-width: 768px) {
+  .settings form .switches .form-switch {
+    padding: 0;
+    margin: 0;
+  }
 }
 @media (max-width: 1200px) {
   .settings form .switches .form-check {

@@ -1,5 +1,7 @@
 ﻿@page "/Account/PersonalData"
+@using Azure.Messaging.ServiceBus
 @using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
 
 @rendermode InteractiveServer
 
@@ -8,12 +10,40 @@
 @inject IdentityUserAccessor UserAccessor
 @inject IServiceProvider ServiceProvider
 
-
+@inject IConfiguration _configuration
 
 <PageTitle>Security</PageTitle>
 
+@if (SubmitBox)
+{
+    <div class="submitBox @(SubmitBox ? "visible" : "")">
+        <div class="title">
+            <h1>An verification code has been sent to your email address!</h1>
 
-<div class="security-information">
+            <h4>Enter verification code to change password!</h4>
+        </div>
+
+        <EditForm FormName="submitcode" Model="submitCodeForm" OnValidSubmit="SubmitCode" method="post" novalidate>
+            <DataAnnotationsValidator />
+            <div class="code">
+                <InputText @bind-Value="submitCodeForm.Code" />
+            </div>
+
+            <button class="btn-theme" type="submit">Verify Code</button>
+
+        </EditForm>
+
+        @if (SubmitCodeMessage == "Error")
+        {
+            <p>Failed to verify code.</p>
+        }
+
+    </div>
+}
+
+<div class="security-information @(SubmitBox ? "blur" : "")" >
+
+
     <h2>Security</h2>
     <h5>Password</h5>
     @if (StatusMessage == "Succeeded")
@@ -79,6 +109,8 @@
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
+    [SupplyParameterFromForm]
+    public SubmitCodeForm submitCodeForm { get; set; } = new();
 
     [SupplyParameterFromForm]
     public PasswordForm passwordForm { get; set; } = new();
@@ -88,8 +120,57 @@
 
     public string StatusMessage { get; set; } = "";
 
+    public string SubmitCodeMessage { get; set; } = "";
+
+    public bool SubmitBox = false;
+
+    public string Email = "";
+
     public string CheckBoxErrorMessage { get; set; } = "";
 
+
+    private async Task SubmitCode(EditContext editContext)
+    {
+
+        submitCodeForm.Email = Email;
+
+
+        var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/Verify?code={_configuration["ApiKeyVerify"]}", submitCodeForm);
+
+        if (result.IsSuccessStatusCode)
+        {
+            SubmitBox = false;
+
+            var user = (await AuthenticationState).User;
+
+            if (user.Identity!.IsAuthenticated)
+            {
+                await using var scope = ServiceProvider.CreateAsyncScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+                var userId = usermanager.GetUserId(user);
+                var userpw = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (userpw != null)
+                {
+                    var passwordResult = await UserManager.ChangePasswordAsync(userpw, passwordForm.Password, passwordForm.NewPassword);
+
+                    if (passwordResult.Succeeded)
+                    {
+                        StatusMessage = "Succeeded";
+                    }
+                }
+            }
+
+        }
+        else
+        {
+            SubmitCodeMessage = "Error";
+        }
+
+    }
 
     private async Task UpdatePassword(EditContext editContext)
     {
@@ -106,21 +187,18 @@
             var userId = usermanager.GetUserId(user);
             userDetails = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (userDetails != null)
-            {
+            Email = userDetails!.Email!;
+            ServiceBusClient client = new ServiceBusClient(_configuration["ServiceBusConnection"]);
+            ServiceBusSender sender = client.CreateSender(_configuration["VerificationQueue"]);
 
 
-                var result = await UserManager.ChangePasswordAsync(userDetails, passwordForm.Password, passwordForm.NewPassword);
+            var messageBody = JsonConvert.SerializeObject(new { Email = userDetails!.Email });
+            ServiceBusMessage message = new ServiceBusMessage(messageBody);
 
-                if (result.Succeeded)
-                {
-                    StatusMessage = "Succeeded";
-                }
-                else
-                {
-                    StatusMessage = "Error";
-                }
-            }
+            await sender.SendMessageAsync(message);
+
+            SubmitBox = true;
+
 
         }
 
@@ -128,6 +206,9 @@
 
     private async Task DeleteUser(EditContext editContext)
     {
+
+
+
         var user = (await AuthenticationState).User;
 
         if (user.Identity!.IsAuthenticated)
@@ -165,12 +246,13 @@
                 {
                     CheckBoxErrorMessage = "You must check box.";
                 }
-                
+
 
             }
 
         }
     }
+
 
 
 
@@ -198,6 +280,13 @@
         [Display(Name = "Yes, I want to delete my account", Order = 1)]
         [Required(ErrorMessage = "You must check box.")]
         public bool Delete { get; set; } = false;
+    }
+
+    public class SubmitCodeForm
+    {
+        public string Email { get; set; } = null!;
+
+        public string Code { get; set; } = null!;
     }
 
 
