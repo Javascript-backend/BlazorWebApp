@@ -79,3 +79,14 @@
         <img src="/images/background/illustration.svg" alt="">
     </div>
 </section>
+
+@code {
+    public async Task GetAllCourses()
+    {
+        HttpClient client = new HttpClient();
+        var url = "https://gbgcourseprovider.azurewebsites.net/api/playground?code=DdxNRoN9VndWdNb3A7J3fDHjq-AgMWD0yflvEzfzQ6Z-AzFuk4cJRg%3D%3D";
+        var response = await client.GetAsync(url);
+
+        if (response)
+    }
+}
