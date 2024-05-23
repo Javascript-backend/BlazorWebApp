@@ -2912,3 +2912,17 @@ footer .container .social-media i:hover {
   justify-content: center;
   align-items: center;
 }
+.reset-password .container {
+  text-align: center;
+}
+.reset-password .container .row {
+  display: flex;
+  justify-content: center;
+}
+.reset-password .container .row form {
+  display: flex;
+  flex-direction: column;
+}
+.reset-password-confirmation .container {
+  text-align: center;
+}
