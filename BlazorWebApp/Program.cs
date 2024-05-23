@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using Azure.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri")!);
+builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -28,14 +32,25 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddAuthentication()
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["FacebookAppId"]!;
+        options.AppSecret = builder.Configuration["FacebookAppSecret"]!;
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["GoogleClientId"]!;
+        options.ClientSecret = builder.Configuration["GoogleClientSecret"]!;
+    });
+
+var connectionString = builder.Configuration["SqlServer"!];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
     
-
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

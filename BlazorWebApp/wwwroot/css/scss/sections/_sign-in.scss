@@ -11,7 +11,6 @@
         margin-bottom: 50px;
 
         .box {
-
             max-width: 526px;
             width: 100%;
 
@@ -20,7 +19,6 @@
             }
 
             .title {
-
                 margin-bottom: 30px;
 
                 @media (max-width: 992px) {
@@ -29,29 +27,6 @@
             }
 
             form {
-
-                .external-providers {
-                    border-top: 1px solid #c9cbda;
-                    padding-top: 10px;
-
-                    h6 {
-                        text-align: center;
-                    }
-
-                    .providers {
-                        display: flex;
-                        justify-content: center;
-                        gap: 10px;
-
-                        .btn-gray {
-                            padding: 10px 30px;
-
-                            i {
-                                margin-right: 5px;
-                            }
-                        }
-                    }
-                }
 
                 .error-message {
                     text-align: center;
@@ -103,6 +78,31 @@
                     display: block;
                     text-align: center;
                     margin-bottom: 10px;
+                }
+            }
+
+
+            .external-providers {
+                border-top: 1px solid #c9cbda;
+                padding-top: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                form {
+
+
+                    div {
+
+                        p {
+                            display:flex;
+                            gap: 10px;
+
+                            button {
+                                padding: 8px 30px;
+                            }
+                        }
+                    }
                 }
             }
         }
