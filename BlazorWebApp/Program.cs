@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
 using Azure.Identity;
+using BlazorBackofficeApp.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,7 +70,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -104,5 +105,7 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

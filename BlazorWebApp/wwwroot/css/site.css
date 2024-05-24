@@ -2926,3 +2926,75 @@ footer .container .social-media i:hover {
 .reset-password-confirmation .container {
   text-align: center;
 }
+
+.chat {
+  width: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@media (max-width: 1200px) {
+  .chat {
+    margin-top: 50px;
+  }
+}
+@media (max-width: 1000px) {
+  .chat {
+    width: auto;
+    align-self: center;
+  }
+}
+.chat .row {
+  width: 70%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+.chat .row .col {
+  width: 100%;
+}
+.chat .row .col .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.chat .row .col .card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media (max-width: 770px) {
+  .chat .row .col .card .card-body .List-group li div {
+    font-size: 12px;
+  }
+}
+.chat .list-group-items {
+  list-style-type: none;
+}
+.chat .List-group {
+  display: flex;
+  flex-direction: column;
+}
+.chat .List-group span {
+  align-self: center;
+}
+.chat .List-group li {
+  margin-top: 15px;
+}
+.chat .List-group .chat-bubble-right {
+  text-align: left;
+  background-color: #7DCCFA;
+  margin-left: auto;
+  border-radius: 15px;
+  padding: 10px;
+  max-width: 75%;
+}
+.chat .List-group .chat-bubble-left {
+  text-align: left;
+  background-color: #dadada;
+  margin-right: auto;
+  border-radius: 15px;
+  padding: 10px;
+  max-width: 75%;
+  border: 1px solid black;
+}
