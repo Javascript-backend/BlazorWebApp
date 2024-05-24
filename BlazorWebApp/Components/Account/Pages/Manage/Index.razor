@@ -87,53 +87,65 @@
         </EditForm>
     </div>
     <div class="address">
-        <h5>Address</h5>
-        <EditForm FormName="addressform" Model="addressForm" OnValidSubmit="UpdateAddressInfo" method="post" novalidate>
-            <DataAnnotationsValidator />
-            @if (AddressStatusMessage == "Succeeded")
-            {
-                <div class="alert alert-success" role="alert">
-                    Address was updated!
-                </div>
-            }
-            else if (AddressStatusMessage == "Error")
-            {
-                <div class="alert alert-danger" role="alert">
-                    Something went wrong!
-                </div>
-            }
-            <div class="Address-line-1">
-                <div class="Address1">
-                    <label>Address line 1</label>
-                    <InputText @bind-Value="addressForm.AddressLine_1" />
-                    <ValidationMessage For="@(() => addressForm.AddressLine_1)" />
+        @if(responseMessage == null)
+        {
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
-            <div class="Address-line-2">
-                <div class="Address2">
-                    <label>Address line 2 (optional)</label>
-                    <InputText @bind-Value="addressForm.AddressLine_2" />
+        }
+        else
+        {
+            <h5>Address</h5>
+            <EditForm FormName="addressform" Model="addressForm" OnValidSubmit="UpdateAddressInfo" method="post" novalidate>
+                <DataAnnotationsValidator />
+                @if (AddressStatusMessage == "Succeeded")
+                {
+                    <div class="alert alert-success" role="alert">
+                        Address was updated!
+                    </div>
+                }
+                else if (AddressStatusMessage == "Error")
+                {
+                    <div class="alert alert-danger" role="alert">
+                        Something went wrong!
+                    </div>
+                }
+                <div class="Address-line-1">
+                    <div class="Address1">
+                        <label>Address line 1</label>
+                        <InputText @bind-Value="addressForm.AddressLine_1" />
+                        <ValidationMessage For="@(() => addressForm.AddressLine_1)" />
+                    </div>
                 </div>
-            </div>
+                <div class="Address-line-2">
+                    <div class="Address2">
+                        <label>Address line 2 (optional)</label>
+                        <InputText @bind-Value="addressForm.AddressLine_2" />
+                    </div>
+                </div>
 
-            <div class="Postal-code-city">
-                <div class="postal-code">
-                    <label>Postal code</label>
-                    <InputText @bind-Value="addressForm.PostalCode" />
-                    <ValidationMessage For="@(() => addressForm.PostalCode)" />
+                <div class="Postal-code-city">
+                    <div class="postal-code">
+                        <label>Postal code</label>
+                        <InputText @bind-Value="addressForm.PostalCode" />
+                        <ValidationMessage For="@(() => addressForm.PostalCode)" />
+                    </div>
+                    <div class="city">
+                        <label>City</label>
+                        <InputText @bind-Value="addressForm.City" />
+                        <ValidationMessage For="@(() => addressForm.City)" />
+                    </div>
                 </div>
-                <div class="city">
-                    <label>City</label>
-                    <InputText @bind-Value="addressForm.City" />
-                    <ValidationMessage For="@(() => addressForm.City)" />
-                </div>
-            </div>
 
-            <div class="buttons">
-                <button id="cancel" class="btn-theme" type="reset">Cancel </button>
-                <button class="btn-theme" type="submit">Save changes</button>
-            </div>
-        </EditForm>
+                <div class="buttons">
+                    <button id="cancel" class="btn-theme" type="reset">Cancel </button>
+                    <button class="btn-theme" type="submit">Save changes</button>
+                </div>
+            </EditForm>
+        }
+
     </div>
 
 
@@ -148,6 +160,8 @@
     private ApplicationUser updateDetails = new ApplicationUser();
 
     private AddressRequest addressRequest = new AddressRequest();
+
+    private HttpResponseMessage responseMessage = new HttpResponseMessage();
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
@@ -180,12 +194,12 @@
             {
                 addressForm.UserId = userId;
 
-                var result = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/UpdateAddress?code={_configuration["ApiKeyUpdateAddress"]}", addressForm);
+                responseMessage = await Http.PostAsJsonAsync($"https://accountprovider-silicon.azurewebsites.net/api/UpdateAddress?code={_configuration["ApiKeyUpdateAddress"]}", addressForm);
 
-                if (result.IsSuccessStatusCode)
+                if (responseMessage.IsSuccessStatusCode)
                 {
 
-                    var address = await result.Content.ReadAsStringAsync();
+                    var address = await responseMessage.Content.ReadAsStringAsync();
                     addressForm = JsonConvert.DeserializeObject<AddressForm>(address)!;
 
                     AddressStatusMessage = "Succeeded";

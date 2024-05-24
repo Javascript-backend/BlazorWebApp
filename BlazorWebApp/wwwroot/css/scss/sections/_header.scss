@@ -20,7 +20,7 @@ header {
         }
     }
 
-    @media (min-width:1200px) {
+    @media (min-width:1000px) {
         .menu-bar.active {
             display: none;
         }
@@ -58,7 +58,7 @@ header {
             justify-content: center;
         }
 
-        @media (min-width:1200px) {
+        @media (min-width:1000px) {
             .little-box {
                 display: none;
             }
