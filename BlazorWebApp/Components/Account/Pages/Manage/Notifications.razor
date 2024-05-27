@@ -9,45 +9,56 @@
 
 
 <div class="settings">
-    <h2>Notifications</h2>
-
-    <EditForm FormName="updateSubscribe" Model="settingsForm" OnValidSubmit="UpdateSubscribe" method="post" novalidate>
-
-        @if (SubscribeMessage == "Subscribed")
-        {
-            <div class="alert alert-success" role="alert">
-                You have been subscribed!
+    @if (responseMessage == null)
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
-        }
-        else if (SubscribeMessage == "Unsubscribed")
-        {
-            <div class="alert alert-danger" role="alert">
-                You have been unsubscribed!
-            </div>
-        }
-
-
-        <div class="switches">
-            <div class="form-check form-switch">
-                <InputCheckbox @bind-Value="@settingsForm.Subscribe" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
-                <h6>Subscribe to Newsletter</h6>
-                <label class="form-check-label" for="flexSwitchCheckDefault">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</label>
-            </div>
-
         </div>
+    } 
+    else
+    {
+        <h2>Notifications</h2>
 
-        <div class="buttons">
-            @if(settingsForm.Subscribe)
-            {
-                <button class="btn-theme" type="submit">Unsubscribe </button>
-            }
-            else
-            {
-                <button class="btn-theme" type="submit">Subscribe </button>
-            }
-        </div>
+        <EditForm FormName="updateSubscribe" Model="settingsForm" OnValidSubmit="UpdateSubscribe" method="post" novalidate>
 
-     </EditForm>
+            @if (SubscribeMessage == "Subscribed")
+            {
+                <div class="alert alert-success" role="alert">
+                    You have been subscribed!
+                </div>
+            }
+            else if (SubscribeMessage == "Unsubscribed")
+            {
+                <div class="alert alert-danger" role="alert">
+                    You have been unsubscribed!
+                </div>
+            }
+
+
+            <div class="switches">
+                <div class="form-check form-switch">
+                    <InputCheckbox @bind-Value="@settingsForm.Subscribe" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" />
+                    <h6>Subscribe to Newsletter</h6>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</label>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                @if (settingsForm.Subscribe)
+                {
+                    <button class="btn-theme" type="submit">Unsubscribe </button>
+                }
+                else
+                {
+                    <button class="btn-theme" type="submit">Subscribe </button>
+                }
+            </div>
+
+        </EditForm>
+    }
 
     <EditForm FormName="updateTheme" Model="settingsForm" OnValidSubmit="UpdateTheme" method="post" novalidate>
 
@@ -91,6 +102,8 @@
 
     private ApplicationUser userEmail = new ApplicationUser();
 
+    private HttpResponseMessage responseMessage = new HttpResponseMessage();
+
     [CascadingParameter]
 
     private HttpContext context { get; set; } = default!;
@@ -99,7 +112,7 @@
 
     public string SubscribeMessage = "";
 
-    private async Task UpdateTheme()
+    private  void UpdateTheme()
     {
         if (themeMode == "light")
         {
@@ -138,9 +151,9 @@
 
             subscribeForm.Email = userEmail.Email!;
 
-            var result = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Subscribe?code={_configuration["ApikeyNewsletter"]}", subscribeForm);
+            var response = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/Subscribe?code={_configuration["ApikeyNewsletter"]}", subscribeForm);
 
-            if(result.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 settingsForm.Subscribe = true;
                 SubscribeMessage = "Subscribed";
@@ -184,9 +197,9 @@
                 {
                     subscribeForm.Email = userEmail.Email!;
 
-                     var ApiResponse = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/GetSubscriber?code={_configuration["ApiKeyGetSubscriber"]}", subscribeForm);
+                    responseMessage = await Http.PostAsJsonAsync($"https://newsletterprovider-silicon-cl.azurewebsites.net/api/GetSubscriber?code={_configuration["ApiKeyGetSubscriber"]}", subscribeForm);
 
-                    if(ApiResponse.IsSuccessStatusCode)
+                    if (responseMessage.IsSuccessStatusCode)
                     {
                         settingsForm.Subscribe = true;
                     }

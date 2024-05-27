@@ -8,9 +8,14 @@ using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Azure.Identity;
+using BlazorBackofficeApp.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultEndpoint = new Uri(builder.Configuration["VaultUri"]!);
+builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -30,14 +35,25 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+builder.Services.AddAuthentication()
+    .AddFacebook(options =>
+    {
+        options.AppId = builder.Configuration["FacebookAppId"]!;
+        options.AppSecret = builder.Configuration["FacebookAppSecret"]!;
+    })
+    .AddGoogle(options =>
+    {
+        options.ClientId = builder.Configuration["GoogleClientId"]!;
+        options.ClientSecret = builder.Configuration["GoogleClientSecret"]!;
+    });
+
+var connectionString = builder.Configuration["SqlServer"!];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
     
-
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -56,7 +72,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -91,5 +107,7 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();

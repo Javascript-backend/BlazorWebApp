@@ -1,0 +1,145 @@
+﻿﻿
+@page "/account/Messages"
+
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NavigationManager
+
+
+
+@rendermode InteractiveServer
+
+<PageTitle>Silicon Backoffice Chat</PageTitle>
+
+<section class="chat">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">Blazor Chat</div>
+                <div class="card-body">
+
+                    <ul class="List-group">
+
+                        @if (messages.Any())
+                        {
+                            @foreach (var message in messages)
+                            {
+                                <span>@message.Created</span>
+
+                                <li class="mb-3 list-group-items @(message.UserName == userName ? "chat-bubble-right" : "chat-bubble-left")">
+                                    <div>
+                                        <strong>@message.UserName</strong>
+                                        <div>@message.Message</div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
+                    </ul>
+                    <div class="mt-3" style="height: 20px">
+                        @if (!string.IsNullOrEmpty(typingUser))
+                        {
+                            <div>@typingUser is typing <span class="typing-indicator">...</span></div>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="mt-2">
+                        <textarea class="form-control" placeholder="Message" @bind="currentMessage" @oninput="NotifyTyping"></textarea>
+                    </div>
+                    <div class="col-2 my-3">
+                        <button class="btn btn-success " @onclick="Send">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+@code {
+    private HubConnection? connection;
+    private bool isConnected => connection?.State == HubConnectionState.Connected;
+    private string? userName;
+    private string? typingUser;
+    private System.Timers.Timer? typingTimer;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    private List<ChatMessage> messages = new();
+    private string? currentMessage;
+
+
+    private class ChatMessage
+    {
+        public string? Message { get; set; }
+        public string? UserName { get; set; }
+        public DateTime Created { get; set; }
+    }
+
+    private async Task NotifyTyping() => await connection!.SendAsync("Typing", userName);
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(currentMessage))
+        {
+            var newMessage = new ChatMessage { UserName = userName, Message = currentMessage, Created = DateTime.Now };
+
+            await connection!.SendAsync("SendMessageToAll", newMessage.UserName, newMessage.Message, newMessage.Created);
+
+            currentMessage = string.Empty;
+        }
+
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationState).User;
+
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            userName = user.Identity.Name;
+        }
+        else
+        {
+            userName = "Anonymous";
+        }
+
+        connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("https://admin-win23jsbackend-goteborg.azurewebsites.net/chathub")).Build();
+
+
+
+        connection.On<string, string, DateTime>("ReceiveMessage", (fromUser, message, dateTime) =>
+        {
+            var receiveMessage = new ChatMessage { UserName = fromUser, Message = message, Created = dateTime };
+            messages.Add(receiveMessage);
+            InvokeAsync(StateHasChanged);
+        });
+
+        connection.On<string>("UserTyping", (typingUserName) =>
+        {
+            typingUser = typingUserName;
+            InvokeAsync(StateHasChanged);
+
+            typingTimer?.Stop();
+            typingTimer = new System.Timers.Timer(2000);
+            typingTimer.Elapsed += (s, e) =>
+            {
+                typingUser = null!;
+                InvokeAsync(StateHasChanged);
+            };
+            typingTimer.Start();
+        });
+
+        await connection.StartAsync();
+    }
+}
