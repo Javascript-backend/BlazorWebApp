@@ -7,6 +7,10 @@
         display: grid;
         grid-template-columns: 1fr;
 
+        @media (max-width: 500px) {
+            padding: 0;
+        }
+
         .categories {
             display: flex;
             margin-bottom: 50px;
@@ -56,86 +60,37 @@
             }
 
             .inputs {
+                align-self: center;
+                position: relative;
+                display: flex;
 
-                .filters {
-                    align-self: center;
-                    display: flex;
 
-                    .select {
-                        position: relative;
-                        display: inline-block;
+                select {
+                    padding: 10px 110px 10px 5px;
+                    border-radius: 5px;
+                    border: 1px solid grey;
 
-                        .selected {
-                            text-align: start;
-                            padding: 10px 110px 10px 5px;
-                            border-radius: 5px;
-                            border: 1px solid grey;
-                            margin-left: 25px;
-                            cursor: pointer;
-                        }
-
-                        .select-options {
-                            display: none;
-                            position: absolute;
-                            background-color: white;
-                            border-radius: 5px;
-                            border: 1px solid grey;
-                            margin-left: 25px;
-                            overflow: auto;
-                            z-index: 999;
-                        }
-
-                        .option {
-                            padding: 5px 50px 6px 3px;
-                            cursor: pointer;
-
-                            &:hover {
-                                background-color: #ddd;
-                            }
-                        }
-
-                        &.open {
-                            .selected {
-                                background-color: #ddd;
-                            }
-
-                            .select-options {
-                                display: block;
-                            }
-                        }
+                    @media (max-width: 992px) {
+                        padding: 10px 10px 10px 5px;
                     }
+                }
 
-                    select {
-                        padding: 10px 110px 10px 5px;
-                        border-radius: 5px;
-                        border: 1px solid grey;
+                input {
+                    text-align: start;
+                    padding: 10px 110px 10px 5px;
+                    border-radius: 5px;
+                    border: 1px solid grey;
+                    margin-left: 25px;
 
-                        @media (max-width: 992px) {
-                            padding: 10px 10px 10px 5px;
-                        }
+                    @media (max-width: 768px) {
+                        padding: 10px 10px 10px 5px;
                     }
+                }
 
-                    input {
-                        text-align: start;
-                        padding: 10px 110px 10px 5px;
-                        border-radius: 5px;
-                        border: 1px solid grey;
-                        margin-left: 25px;
-
-                        @media (max-width: 768px) {
-                            padding: 10px 10px 10px 5px;
-                        }
-                    }
-
-                    .input-search-group {
-                        position: relative;
-
-                        i {
-                            position: absolute;
-                            bottom: 35%;
-                            right: 2%;
-                        }
-                    }
+                i {
+                    position: absolute;
+                    bottom: 35%;
+                    right: 2%;
                 }
             }
         }
@@ -322,6 +277,10 @@
         gap: 100px;
         padding: 40px 100px;
 
+        @media (max-width: 500px) {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             padding: 20px 0px;
         }
@@ -337,6 +296,7 @@
             }
 
             h1 {
+  
 
                 p {
                     color: $theme;

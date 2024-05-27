@@ -1,10 +1,26 @@
 .courses {
     align-self: flex-start;
+    width: 100%;
+
+    .container {
+
+        @media(max-width: 500px) {
+            padding :0;
+        }
+    }
 
     .title-button {
         display: flex;
         justify-content: space-between;
 
+        h2 {
+
+            margin-right: 200px;
+
+            @media (max-width: 500px) {
+                margin-right: 50px;
+            }
+        }
 
         form {
 
@@ -12,6 +28,11 @@
                 background-color: white;
                 color: red;
                 padding: 8px 30px;
+
+                @media (max-width: 770px){
+
+                    padding: 5px;
+                }
             }
         }
     }

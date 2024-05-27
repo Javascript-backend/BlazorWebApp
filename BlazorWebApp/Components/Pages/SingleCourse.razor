@@ -1,4 +1,13 @@
 ﻿@page "/SingleCourse"
+@using System.Text.Json
+@using BlazorWebApp.Models
+@using Microsoft.EntityFrameworkCore
+
+@inject IServiceProvider ServiceProvider
+@inject IConfiguration _configuration
+
+@rendermode InteractiveServer
+
 
 <section id="single-course-showcase">
     <img class="background-image" src="/images/background/single_course_background.svg" alt="">
@@ -9,33 +18,35 @@
             <i class="fa-light fa-arrow-right"></i>
             <a href="courses.html">Courses</a>
             <i class="fa-light fa-arrow-right"></i>
-            <a  class="active ">Title </a>
+            <a class="active">@course.Title</a>
         </div>
         <div class="section-title">
             <div class="tags">
-@*                 @if (Model.Course.BestSeller != null)
+                @if (course.IsBestSeller)
                 {
-                    <div class="tag1">@Model.Course.BestSeller</div>
-                } *@
-                <div class="tag2">Digital</div>
+                    <div class="tag1">Best seller</div>
+                }
+                @if (course.IsDigital)
+                {
+                    <div class="tag2">Digital</div>
+                }
             </div>
-            <h1>Title</h1>
+            <h1>@course.Title</h1>
             <div class="text-lg">Egestas feugiat lorem eu neque suspendisse ullamcorper scelerisque aliquam mauris.</div>
             <div class="reviews-hours-likes">
                 <img src="/images/icons/rating.svg" alt="">
-                <p>(1.2K reviews)</p>
+                <p>@course.Reviews</p>
                 <i class="fa-light fa-thumbs-up"></i>
-                <p>Likes</p>
+                <p>@course.Likes likes</p>
                 <i class="fa-duotone fa-timer"></i>
-                <p>Hours</p>
+                <p>@course.Hours hours</p>
             </div>
         </div>
-
         <div class="profile">
             <img src="/images/profile/profile_1.svg" alt="">
             <div class="text">
                 <p class="author">Created by</p>
-                <p>Author</p>
+                <p>@course.Authors?.FirstOrDefault()?.Name</p>
             </div>
         </div>
     </div>
@@ -43,13 +54,31 @@
 
 <section id="course-description">
     <div class="container">
+        @if (StatusMessage == "Success")
+        {
+            <div class="alert alert-success" role="alert">
+                Course was saved!
+            </div>
+        }
+        else if (StatusMessage == "removed")
+        {
+            <div class="alert alert-warning" role="alert">
+                Course was removed
+            </div>
+        }
+        else if (StatusMessage == "Error")
+        {
+            <div class="alert alert-danger" role="alert">
+                Something went wrong!
+            </div>
+        }
         <div class="description">
+
             <div class="section-title">
                 <h1>Course Description</h1>
-                <p>Suspendisse natoque sagittis, consequat turpis. Sed tristique tellus morbi magna. At vel senectus accumsan, arcu mattis id tempor. Tellus sagittis, euismod porttitor sed tortor est id. Feugiat velit velit, tortor ut. Ut libero cursus nibh lorem urna amet tristique leo. Viverra lorem arcu nam nunc at ipsum quam. A proin id sagittis dignissim mauris condimentum ornare. Tempus mauris sed dictum ultrices.</p>
+                <p>@course.Content?.Description</p>
                 <div class="learn">
                     <h3>What you'll learn</h3>
-
                     <p><i class="fa-regular fa-circle-check"></i>Sed lectus donec amet eu turpis interdum.</p>
                     <p><i class="fa-regular fa-circle-check"></i>Nulla at consectetur vitae dignissim porttitor.</p>
                     <p><i class="fa-regular fa-circle-check"></i>Phasellus id vitae dui aliquet mi.</p>
@@ -60,67 +89,41 @@
             <div class="includes-box">
                 <h4>This course includes:</h4>
                 <p><i class="fa-solid fa-video"></i>Model hours on-demand video</p>
-
                 <p><i class="fa-solid fa-download"></i>25 downloadable resources</p>
-
                 <p><i class="fa-solid fa-infinity"></i>Full lifetime access</p>
-
                 <p><i class="fa-solid fa-trophy"></i>Certificate of completion</p>
-
                 <p><i class="fa-solid fa-newspaper"></i>18 articles</p>
                 <div class="price">
-                    <h2>Price</h2>
-                    <h2>Saleprice</h2>
-                    <h5><s>Oldprice</s></h5>
+                    @if (course.Prices != null)
+                    {
+                        @if (course.Prices.Discount <= 0)
+                        {
+                            <div>$ @course.Prices.Price</div>
+                        }
+                        else
+                        {
+                            <div>$ @course.Prices.Discount</div>
+                            <div class="sale">Sale price</div>
+                            <s><p>$ @course.Prices.Price</p></s>
+                        }
+                    }
                 </div>
-                <a class="btn-theme" href="">Join course</a>
+                <button @onclick="() => SaveCourse(new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title })" class="btn-theme" >Join course</button>
             </div>
         </div>
         <div class="program-details">
             <h1>Program Details</h1>
             <div class="steps">
-                <div class="step">
-                    <img src="/images/icons/1.svg" alt="">
-                    <div class="text">
-                        <h4>Introduction. Getting started</h4>
-                        <p>Nulla faucibus mauris pellentesque blandit faucibus non. Sit ut et at suspendisse gravida hendrerit tempus placerat.</p>
+                @foreach (var detail in course.Content?.ProgramDetails ?? new List<ProgramDetailItem>())
+                {
+                    <div class="step">
+                        <img src="/images/icons/@($"{detail.Id}.svg")" alt="">
+                        <div class="text">
+                            <h4>@detail.Title</h4>
+                            <p>@detail.Description</p>
+                        </div>
                     </div>
-                </div>
-                <div class="step">
-                    <img src="/images/icons/2.svg" alt="">
-                    <div class="text">
-                        <h4>The ultimate HTML developer: advanced HTML</h4>
-                        <p>Lobortis diam elit id nibh ultrices sed penatibus donec. Nibh iaculis eu sit cras ultricies. Nam eu eget etiam egestas donec scelerisque ut ac enim. Vitae ac nisl, enim nec accumsan vitae est.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/images/icons/3.svg" alt="">
-                    <div class="text">
-                        <h4>CSS & CSS3: basic</h4>
-                        <p>Duis euismod enim, facilisis risus tellus pharetra lectus diam neque. Nec ultrices mi faucibus est. Magna ullamcorper potenti elementum ultricies auctor nec volutpat augue.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/images/icons/4.svg" alt="">
-                    <div class="text">
-                        <h4>JavaScript basics for beginners</h4>
-                        <p>Morbi porttitor risus imperdiet a, nisl mattis. Amet, faucibus eget in platea vitae, velit, erat eget velit. At lacus ut proin erat.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/images/icons/5.svg" alt="">
-                    <div class="text">
-                        <h4>Understanding APIs</h4>
-                        <p>Risus morbi euismod in congue scelerisque fusce pellentesque diam consequat. Nisi mauris nibh sed est morbi amet arcu urna. Malesuada feugiat quisque consectetur elementum diam vitae. Dictumst facilisis odio eu quis maecenas risus odio fames bibendum.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/images/icons/6.svg" alt="">
-                    <div class="text">
-                        <h4>C# and .NET from beginner to advanced</h4>
-                        <p>Quis risus quisque diam diam. Volutpat neque eget eu faucibus sed urna fermentum risus. Est, mauris morbi nibh massa.</p>
-                    </div>
-                </div>
+                }
             </div>
         </div>
         <div class="author">
@@ -130,7 +133,7 @@
                 <div class="text">
                     <h5>Learn from the best</h5>
                     <h1>Author</h1>
-                    <p>Dolor ipsum amet cursus quisque porta adipiscing. Lorem convallis malesuada sed maecenas. Ac dui at vitae mauris cursus in nullam porta sem. Quis pellentesque elementum ac bibendum. Nunc aliquam in tortor facilisis. Vulputate eget risus, metus phasellus. Pellentesque faucibus amet, eleifend diam quam condimentum convallis ultricies placerat. Duis habitasse placerat amet, odio pellentesque rhoncus, feugiat at. Eget pellentesque tristique felis magna fringilla.</p>
+                    <p>@course.Authors?.FirstOrDefault()?.Name</p>
                     <div class="buttons">
                         <a class="btn-theme youtube" href=""><i class="fa-brands fa-youtube"></i>240k subscribers</a>
                         <a class="btn-theme twitter" href=""><i class="fa-brands fa-twitter"></i>180k followers</a>
@@ -140,3 +143,128 @@
         </div>
     </div>
 </section>
+
+
+
+@code {
+
+    [SupplyParameterFromQuery]
+    private string? Id { get; set; }
+
+    private string StatusMessage = "";
+
+    private string FullName = "";
+
+    private ApplicationUser user = new ApplicationUser();
+
+    public FullCourseModel course = new FullCourseModel();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userClaims = (await AuthenticationState).User;
+
+        if (userClaims.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(userClaims);
+            if (userId != null)
+            {
+                user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+                FullName = $"{user.FirstName} {user.LastName}";
+            }
+        }
+
+
+
+        var query = new
+        {
+            query = $@"
+                    {{
+                    getCourseById(id: ""{Id}"") {{
+                    id
+                    imageUri
+                    imageHeaderUri
+                    isBestSeller
+                    isDigital
+                    categories
+                    title
+                    ingress
+                    starRating
+                    reviews
+                    likesInPercent
+                    likes
+                    hours
+                    authors {{
+
+                        name
+
+                    }}
+                    prices {{
+                        price
+                        discount
+
+                    }}
+                    content {{
+                        description
+                        includes
+                        programDetails {{
+                        id
+                        title
+                        description
+                        }}
+                    }}
+                    }}
+                    }}"
+        };
+
+        var response = await Http.PostAsJsonAsync("https://gbgcourseprovider.azurewebsites.net/api/graphql?code=uAMkjucuAPkVqyLMmbal_N8rxyPXJslqzzde7JdZTWIKAzFuhtmdNA%3D%3D", query);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JsonDocument.Parse(jsonString);
+
+            course = JsonSerializer.Deserialize<FullCourseModel>(
+                jsonResponse.RootElement.GetProperty("data").GetProperty("getCourseById").ToString(),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+        }
+    }
+
+    public async Task SaveCourse(SaveCourseModel model)
+    {
+
+
+        var response = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/SaveCourse?code={_configuration["ApiKeySaveCourse"]}", model);
+
+        if (response.IsSuccessStatusCode)
+        {
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (responseBody == "removed")
+            {
+
+                StatusMessage = "removed";
+            }
+            else
+            {
+
+                StatusMessage = "Success";
+            }
+        }
+        else
+        {
+            StatusMessage = "Error";
+        }
+
+    }
+}
