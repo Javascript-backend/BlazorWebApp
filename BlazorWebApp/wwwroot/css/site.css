@@ -1411,6 +1411,11 @@ footer .container .social-media i:hover {
   display: grid;
   grid-template-columns: 1fr;
 }
+@media (max-width: 500px) {
+  #courses .container {
+    padding: 0;
+  }
+}
 #courses .container .categories {
   display: flex;
   margin-bottom: 50px;
@@ -1452,56 +1457,22 @@ footer .container .social-media i:hover {
     text-align: center;
   }
 }
-#courses .container .title-input-field .inputs .filters {
+#courses .container .title-input-field .inputs {
   align-self: center;
+  position: relative;
   display: flex;
 }
-#courses .container .title-input-field .inputs .filters .select {
-  position: relative;
-  display: inline-block;
-}
-#courses .container .title-input-field .inputs .filters .select .selected {
-  text-align: start;
-  padding: 10px 110px 10px 5px;
-  border-radius: 5px;
-  border: 1px solid grey;
-  margin-left: 25px;
-  cursor: pointer;
-}
-#courses .container .title-input-field .inputs .filters .select .select-options {
-  display: none;
-  position: absolute;
-  background-color: white;
-  border-radius: 5px;
-  border: 1px solid grey;
-  margin-left: 25px;
-  overflow: auto;
-  z-index: 999;
-}
-#courses .container .title-input-field .inputs .filters .select .option {
-  padding: 5px 50px 6px 3px;
-  cursor: pointer;
-}
-#courses .container .title-input-field .inputs .filters .select .option:hover {
-  background-color: #ddd;
-}
-#courses .container .title-input-field .inputs .filters .select.open .selected {
-  background-color: #ddd;
-}
-#courses .container .title-input-field .inputs .filters .select.open .select-options {
-  display: block;
-}
-#courses .container .title-input-field .inputs .filters select {
+#courses .container .title-input-field .inputs select {
   padding: 10px 110px 10px 5px;
   border-radius: 5px;
   border: 1px solid grey;
 }
 @media (max-width: 992px) {
-  #courses .container .title-input-field .inputs .filters select {
+  #courses .container .title-input-field .inputs select {
     padding: 10px 10px 10px 5px;
   }
 }
-#courses .container .title-input-field .inputs .filters input {
+#courses .container .title-input-field .inputs input {
   text-align: start;
   padding: 10px 110px 10px 5px;
   border-radius: 5px;
@@ -1509,14 +1480,11 @@ footer .container .social-media i:hover {
   margin-left: 25px;
 }
 @media (max-width: 768px) {
-  #courses .container .title-input-field .inputs .filters input {
+  #courses .container .title-input-field .inputs input {
     padding: 10px 10px 10px 5px;
   }
 }
-#courses .container .title-input-field .inputs .filters .input-search-group {
-  position: relative;
-}
-#courses .container .title-input-field .inputs .filters .input-search-group i {
+#courses .container .title-input-field .inputs i {
   position: absolute;
   bottom: 35%;
   right: 2%;
@@ -1678,6 +1646,11 @@ footer .container .social-media i:hover {
   justify-content: space-between;
   gap: 100px;
   padding: 40px 100px;
+}
+@media (max-width: 500px) {
+  #get-started .container {
+    display: block;
+  }
 }
 @media (max-width: 768px) {
   #get-started .container {
@@ -2255,6 +2228,12 @@ footer .container .social-media i:hover {
   margin-bottom: 120px;
   display: flex;
 }
+@media (max-width: 776px) {
+  #course-description .container .description {
+    flex-direction: column;
+    gap: 60px;
+  }
+}
 #course-description .container .description .section-title {
   display: flex;
   flex-direction: column;
@@ -2340,6 +2319,7 @@ footer .container .social-media i:hover {
 }
 #course-description .container .author {
   display: flex;
+  justify-content: center;
   margin-top: 120px;
   margin-bottom: 80px;
 }
@@ -2375,7 +2355,7 @@ footer .container .social-media i:hover {
 }
 @media (max-width: 768px) {
   #course-description .container .author .section-title .text {
-    padding: 100px 0px;
+    padding: 100px 20px;
   }
 }
 #course-description .container .author .section-title .text h1 {
@@ -2390,8 +2370,21 @@ footer .container .social-media i:hover {
 #course-description .container .author .section-title .text .buttons {
   margin-top: 50px;
 }
+@media (max-width: 450px) {
+  #course-description .container .author .section-title .text .buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+}
 #course-description .container .author .section-title .text .buttons a {
   margin-right: 30px;
+}
+@media (max-width: 450px) {
+  #course-description .container .author .section-title .text .buttons a {
+    margin: 0;
+    padding: 5px;
+  }
 }
 #course-description .container .author .section-title .text .buttons .youtube {
   background-color: #EF4444;
@@ -2547,15 +2540,34 @@ footer .container .social-media i:hover {
 
 .courses {
   align-self: flex-start;
+  width: 100%;
+}
+@media (max-width: 500px) {
+  .courses .container {
+    padding: 0;
+  }
 }
 .courses .title-button {
   display: flex;
   justify-content: space-between;
 }
+.courses .title-button h2 {
+  margin-right: 200px;
+}
+@media (max-width: 500px) {
+  .courses .title-button h2 {
+    margin-right: 50px;
+  }
+}
 .courses .title-button form button {
   background-color: white;
   color: red;
   padding: 8px 30px;
+}
+@media (max-width: 770px) {
+  .courses .title-button form button {
+    padding: 5px;
+  }
 }
 .courses .articles {
   display: grid;

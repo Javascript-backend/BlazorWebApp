@@ -6,10 +6,21 @@
 @using GraphQL.Client.Abstractions
 @using System.Text.Json
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
+@inject IConfiguration _configuration
+
+
+
+@rendermode InteractiveServer
+@attribute [Authorize]
 <PageTitle>Courses</PageTitle>
 
-@* asdasd *@
-@attribute [Authorize]
+
 <section id="courses">
     <div class="container">
         <div class="categories">
@@ -21,39 +32,60 @@
         <div class="title-input-field">
             <h1>Courses</h1>
             <div class="inputs">
-                <form class="filters">
-
-                    <div class="select">
-                        <div class="selected">All categories</div>
-                        <div class="select-options">
-                            <div class="option" data-value="all">All categories</div>
-
-                        </div>
-                    </div>
-
-                    <div class="input-search-group">
-                        <input id="searchQuery" name="searchQuery" placeholder="Search courses" />
-                        <i class="fa-regular fa-search"></i>
-                    </div>
-                </form>
+                <select name="categories" required>
+                    <option value="" disabled selected hidden>All categories</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="backend">Backend</option>
+                    <option value="fullstack">Fullstack</option>
+                </select>
+                <input type="search" placeholder="Search courses">
+                <i class="fa-solid fa-magnifying-glass"></i>
             </div>
         </div>
+        @if (StatusMessage == "Success")
+        {
+            <div class="alert alert-success" role="alert">
+                Course was saved!
+            </div>
+        }
+        else if (StatusMessage == "removed")
+        {
+            <div class="alert alert-warning" role="alert">
+                Course was removed
+            </div>
+        }
+        else if (StatusMessage == "Error")
+        {
+            <div class="alert alert-danger" role="alert">
+                Something went wrong!
+            </div>
+        }
 
         <div class="articles">
 
-            @if (courses != null)
-            {
-                @foreach (var course in courses)
-                {
-                    <div class="article" onclick="location.href='/courses/@course.Id'">
+
+                @if(courses != null) {
+
+                        @foreach (var course in courses)
+                        {
+                    <div class="article" onclick="location.href='@($"SingleCourse?id={course.Id}")'">
                         @if (course.IsBestSeller)
                         {
                             <div class="best-seller">Best seller</div>
                         }
 
 
-                        <a href="#" class="not-saved"><i class="fa-regular fa-bookmark"></i></a>
-
+                        <EditForm Model="new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title }" OnValidSubmit="() => SaveCourse(new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title })">
+                            @if (savedCourses != null && savedCourses.Any(saved => saved.CourseId == course.Id))
+                            {
+                                <button class="saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                            }
+                            else
+                            {
+                                <button class="not-saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                            }
+                        </EditForm>
+                          
                         <img src="@course.ImageUri" alt="">
                         <div class="article-content">
                             <h5>@course.Title</h5>
@@ -69,9 +101,6 @@
                                     <div class="sale">Sale price</div>
                                     <s><p>$ @course.Prices.Price</p></s>
                                 }
-
-
-
                             </div>
                             <div class="hours-likes">
                                 <div class="hours">
@@ -85,9 +114,10 @@
                             </div>
                         </div>
                     </div>
+
+                        }
                 }
-            }
-            
+               
         </div>
 
     </div>
@@ -108,8 +138,53 @@
 @code {
     private List<CourseCardModel>? courses;
 
+    private List<CoursesSaved>? savedCourses;
+
+    private string FullName = "";
+
+    private ApplicationUser user = new ApplicationUser();
+
+    public SaveCourseModel saveCourse = new SaveCourseModel();
+
+
+    public string StatusMessage { get; set; } = "";
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
+
+        var userClaims = (await AuthenticationState).User;
+
+        if (userClaims.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(userClaims);
+            if (userId != null)
+            {
+                user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+                FullName = $"{user.FirstName} {user.LastName}";
+            }
+        }
+
+        SavedCourseRequest request = new SavedCourseRequest { UserId = user.Id };
+
+        var savedResponse = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/GetSavedCourse?code={_configuration["ApiKeyGetSavedCourses"]}", request);
+
+        if(savedResponse.IsSuccessStatusCode)
+        {
+            savedCourses = await savedResponse.Content.ReadFromJsonAsync<List<CoursesSaved>>();
+
+
+        }
+
         var query = new
         {
             query = "{ getAllCourses { id title isBestSeller isDigital categories imageUri authors { name } prices { price discount } hours likes likesInPercent } }"
@@ -123,5 +198,36 @@
             jsonResponse.RootElement.GetProperty("data").GetProperty("getAllCourses").ToString(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
+    }
+
+
+
+
+    public async Task SaveCourse(SaveCourseModel model)
+    {
+
+
+        var response = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/SaveCourse?code={_configuration["ApiKeySaveCourse"]}", model);
+
+        if(response.IsSuccessStatusCode)
+        {
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (responseBody == "removed")
+            {
+                
+                StatusMessage = "removed";
+            }
+            else
+            {
+                
+                StatusMessage = "Success";
+            }
+        }
+        else
+        {
+            StatusMessage = "Error";
+        }
+
     }
 }

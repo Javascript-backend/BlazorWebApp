@@ -1,48 +1,230 @@
 ﻿@page "/Account/SavedCourses"
 
+@using BlazorWebApp.Models
+@using GraphQL
+@using GraphQL.Client
+@using GraphQL.Client.Http
+@using GraphQL.Client.Abstractions
+@using System.Text.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
 
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
+@inject IConfiguration _configuration
+
+
+
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<PageTitle>Saved courses</PageTitle>
 
 <div class="courses">
     <div class="title-button">
         <h2>Saved Items</h2>
-        <form method="post" >
-            <button class="btn-theme-s"><i class="fa-solid fa-trash"></i>Delete all</button>
-        </form>
+        <EditForm FormName="deleteSavedCurses" Model="deleteForm" OnValidSubmit="DeleteSavedCourses" method="post" >
+            <button @onclick="DeleteSavedCourses" class="btn-theme-s"><i class="fa-solid fa-trash"></i>Delete all</button>
+        </EditForm>
 
     </div>
+
+
+
     <div class="articles">
 
-        <div class="article">
-            <div class="best-seller">Best seller</div>
+        @if (courses != null)
+        {
+
+            @foreach (var course in courses)
+            {
+                <div class="article" onclick="location.href='@($"SingleCourse?id={course.Id}")'">
+                    @if (course.IsBestSeller)
+                    {
+                        <div class="best-seller">Best seller</div>
+                    }
 
 
-            <a href="#" class="not-saved" ><i class="fa-regular fa-bookmark"></i></a>
+                    <EditForm Model="new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title }" OnValidSubmit="() => SaveCourse(new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title })">
+                        @if (savedCourses != null && savedCourses.Any(saved => saved.CourseId == course.Id))
+                        {
+                            <button class="saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                        }
+                        else
+                        {
+                            <button class="not-saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                        }
+                    </EditForm>
 
-            <img src="/images/articles/article-1.svg" alt="">
-            <div class="article-content">
-                <h5>Title</h5>
-                <p>Author</p>
-                <div class="price">
-          
-                <div> Price</div>
-
-                <div class="sale">Sale price</div>
-                <s><p>Old price</p></s>
-                    
-                </div>
-                <div class="hours-likes">
-                    <div class="hours">
-                        <i class="fa-duotone fa-timer"></i>
-                        <p>Hours</p>
+                    <img src="@course.ImageUri" alt="">
+                    <div class="article-content">
+                        <h5>@course.Title</h5>
+                        <p>By @course.Authors?.FirstOrDefault()?.Name</p>
+                        <div class="price">
+                            @if (course.Prices.Discount <= 0)
+                            {
+                                <div>$ @course.Prices.Price</div>
+                            }
+                            else
+                            {
+                                <div>$ @course.Prices.Discount</div>
+                                <div class="sale">Sale price</div>
+                                <s><p>$ @course.Prices.Price</p></s>
+                            }
+                        </div>
+                        <div class="hours-likes">
+                            <div class="hours">
+                                <i class="fa-duotone fa-timer"></i>
+                                <p>@course.Hours hours</p>
+                            </div>
+                            <div class="likes">
+                                <i class="fa-light fa-thumbs-up"></i>
+                                <p>@course.LikesInPercent % (@course.Likes)</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="likes">
-                        <i class="fa-light fa-thumbs-up"></i>
-                        <p>Likes</p>
-                    </div>
                 </div>
-            </div>
-        </div>
+
+            }
+        }
 
 
     </div>
 </div>
+
+
+
+@code {
+    private List<CourseCardModel> courses = new List<CourseCardModel>();
+
+    private List<CoursesSaved>? savedCourses;
+
+    private string FullName = "";
+
+    private ApplicationUser user = new ApplicationUser();
+
+    [SupplyParameterFromForm]
+    public Deleteform deleteForm { get; set; } = new();
+
+    public SaveCourseModel saveCourse = new SaveCourseModel();
+
+
+    public string StatusMessage { get; set; } = "";
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var userClaims = (await AuthenticationState).User;
+
+        if (userClaims.Identity!.IsAuthenticated)
+        {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var userId = usermanager.GetUserId(userClaims);
+            if (userId != null)
+            {
+                user = await dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+
+                FullName = $"{user.FirstName} {user.LastName}";
+            }
+        }
+
+        SavedCourseRequest request = new SavedCourseRequest { UserId = user.Id };
+
+        var savedResponse = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/GetSavedCourse?code={_configuration["ApiKeyGetSavedCourses"]}", request);
+
+        if (savedResponse.IsSuccessStatusCode)
+        {
+            savedCourses = await savedResponse.Content.ReadFromJsonAsync<List<CoursesSaved>>();
+
+            if(savedCourses != null )
+            {
+                foreach(var saved in savedCourses)
+                {
+                    var query = new
+                    {
+                        query = $"{{ getCourseById(id: \"{saved.CourseId}\") {{ id title isBestSeller isDigital categories imageUri authors {{ name }} prices {{ price discount }} hours likes likesInPercent }} }}"
+                    };
+
+                    var response = await Http.PostAsJsonAsync("https://gbgcourseprovider.azurewebsites.net/api/graphql?code=uAMkjucuAPkVqyLMmbal_N8rxyPXJslqzzde7JdZTWIKAzFuhtmdNA%3D%3D", query);
+
+                    if(response.IsSuccessStatusCode)
+                    {
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        var jsonResponse = JsonDocument.Parse(jsonString);
+
+                        var course = JsonSerializer.Deserialize<CourseCardModel>(
+                            jsonResponse.RootElement.GetProperty("data").GetProperty("getCourseById").ToString(),
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+
+                        if(course != null)
+                        {
+                            courses.Add(course);
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+    }
+
+
+
+
+    public async Task SaveCourse(SaveCourseModel model)
+    {
+
+
+        var response = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/SaveCourse?code={_configuration["ApiKeySaveCourse"]}", model);
+
+        if (response.IsSuccessStatusCode)
+        {
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            if (responseBody == "removed")
+            {
+
+                StatusMessage = "removed";
+            }
+            else
+            {
+
+                StatusMessage = "Success";
+            }
+        }
+        else
+        {
+            StatusMessage = "Error";
+        }
+
+    }
+
+    public async Task DeleteSavedCourses()
+    {
+        var result = await Http.PostAsJsonAsync($"https://savecourseprovider-silicon-cl.azurewebsites.net/api/DeleteSavedCourse?code={_configuration["ApiKeyDeleteSavedCourse"]}", savedCourses);
+
+        if (result.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        }
+    }
+
+    public class Deleteform
+    {
+
+        public bool Delete { get; set; } = true;
+    }
+}

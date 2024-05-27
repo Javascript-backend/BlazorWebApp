@@ -8,3 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
+
+window.stopPropagation = function (event) {
+    event.stopPropagation();
+};
+
+window.preventDefault = function (event) {
+    event.preventDefault();
+};
