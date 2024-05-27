@@ -2,10 +2,12 @@ using BlazorWebApp.Components;
 using BlazorWebApp.Components.Account;
 using BlazorWebApp.Data;
 using BlazorWebApp.Middlewares;
+using GraphQL.Client.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Azure.Identity;
 using BlazorBackofficeApp.Hubs;
 

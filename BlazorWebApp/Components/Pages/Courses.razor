@@ -1,7 +1,15 @@
 ﻿@page "/Courses"
-
+@using BlazorWebApp.Models
+@using GraphQL
+@using GraphQL.Client
+@using GraphQL.Client.Http
+@using GraphQL.Client.Abstractions
+@using System.Text.Json
+@using Microsoft.AspNetCore.Authorization
 <PageTitle>Courses</PageTitle>
 
+@* asdasd *@
+@attribute [Authorize]
 <section id="courses">
     <div class="container">
         <div class="categories">
@@ -33,36 +41,53 @@
 
         <div class="articles">
 
-            <div class="article" onclick="location.href='/SingleCourse'">
-                <div class="best-seller">Best seller</div>
+            @if (courses != null)
+            {
+                @foreach (var course in courses)
+                {
+                    <div class="article" onclick="location.href='/courses/@course.Id'">
+                        @if (course.IsBestSeller)
+                        {
+                            <div class="best-seller">Best seller</div>
+                        }
 
 
-                <a href="#" class="not-saved"><i class="fa-regular fa-bookmark"></i></a>
+                        <a href="#" class="not-saved"><i class="fa-regular fa-bookmark"></i></a>
 
-                <img src="https://jsbackendwin23ec.blob.core.windows.net/courseimages/article-1.svg" alt="">
-                <div class="article-content">
-                    <h5>Fullstack Web Developer Course from Scratch</h5>
-                    <p>By Robert Fox</p>
-                    <div class="price">
+                        <img src="@course.ImageUri" alt="">
+                        <div class="article-content">
+                            <h5>@course.Title</h5>
+                            <p>By @course.Authors?.FirstOrDefault()?.Name</p>
+                            <div class="price">
+                                @if (course.Prices.Discount <= 0)
+                                {
+                                    <div>$ @course.Prices.Price</div>
+                                }
+                                else
+                                {
+                                    <div>$ @course.Prices.Discount</div>
+                                    <div class="sale">Sale price</div>
+                                    <s><p>$ @course.Prices.Price</p></s>
+                                }
 
-                        <div> $12.50</div>
 
-                        <div class="sale">Sale price</div>
-                        <s><p>Old price</p></s>
 
-                    </div>
-                    <div class="hours-likes">
-                        <div class="hours">
-                            <i class="fa-duotone fa-timer"></i>
-                            <p>220 hours</p>
+                            </div>
+                            <div class="hours-likes">
+                                <div class="hours">
+                                    <i class="fa-duotone fa-timer"></i>
+                                    <p>@course.Hours hours</p>
+                                </div>
+                                <div class="likes">
+                                    <i class="fa-light fa-thumbs-up"></i>
+                                    <p>@course.LikesInPercent % (@course.Likes)</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="likes">
-                            <i class="fa-light fa-thumbs-up"></i>
-                            <p>94% (4.2K)</p>
-                        </div>
                     </div>
-                </div>
-            </div>           
+                }
+            }
+            
         </div>
 
     </div>
@@ -79,3 +104,24 @@
         <img src="/images/background/illustration.svg" alt="">
     </div>
 </section>
+
+@code {
+    private List<CourseCardModel>? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new
+        {
+            query = "{ getAllCourses { id title isBestSeller isDigital categories imageUri authors { name } prices { price discount } hours likes likesInPercent } }"
+        };
+
+        var response = await Http.PostAsJsonAsync("https://gbgcourseprovider.azurewebsites.net/api/graphql?code=uAMkjucuAPkVqyLMmbal_N8rxyPXJslqzzde7JdZTWIKAzFuhtmdNA%3D%3D", query);
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var jsonResponse = JsonDocument.Parse(jsonString);
+
+        courses = JsonSerializer.Deserialize<List<CourseCardModel>>(
+            jsonResponse.RootElement.GetProperty("data").GetProperty("getAllCourses").ToString(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
+    }
+}
