@@ -32,7 +32,7 @@
                 }
             </div>
             <h1>@course.Title</h1>
-            <div class="text-lg">Egestas feugiat lorem eu neque suspendisse ullamcorper scelerisque aliquam mauris.</div>
+            <div class="text-lg">@course.Ingress</div>
             <div class="reviews-hours-likes">
                 <img src="/images/icons/rating.svg" alt="">
                 <p>@course.Reviews</p>
@@ -88,23 +88,33 @@
             </div>
             <div class="includes-box">
                 <h4>This course includes:</h4>
-                <p><i class="fa-solid fa-video"></i>Model hours on-demand video</p>
+
+
+                @if (course.Content != null && course.Content.Includes != null)
+                {
+                    @foreach (var include in course.Content.Includes)
+                    {
+                        <p><i class="fa-solid fa-plus"></i>@include</p>
+                    }
+                }
+@*                 <p><i class="fa-solid fa-video"></i>Model hours on-demand video</p>
                 <p><i class="fa-solid fa-download"></i>25 downloadable resources</p>
                 <p><i class="fa-solid fa-infinity"></i>Full lifetime access</p>
                 <p><i class="fa-solid fa-trophy"></i>Certificate of completion</p>
-                <p><i class="fa-solid fa-newspaper"></i>18 articles</p>
+                <p><i class="fa-solid fa-newspaper"></i>18 articles</p> *@
                 <div class="price">
                     @if (course.Prices != null)
                     {
+
                         @if (course.Prices.Discount <= 0)
                         {
-                            <div>$ @course.Prices.Price</div>
+                            <h2>$ @course.Prices.Price</h2>
                         }
                         else
                         {
-                            <div>$ @course.Prices.Discount</div>
-                            <div class="sale">Sale price</div>
-                            <s><p>$ @course.Prices.Price</p></s>
+                            <h2>$ @course.Prices.Discount</h2>
+
+                            <s><h5>$ @course.Prices.Price</h5></s>
                         }
                     }
                 </div>
