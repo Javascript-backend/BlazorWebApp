@@ -91,14 +91,15 @@
                             <h5>@course.Title</h5>
                             <p>By @course.Authors?.FirstOrDefault()?.Name</p>
                             <div class="price">
+
                                 @if (course.Prices.Discount <= 0)
                                 {
                                     <div>$ @course.Prices.Price</div>
                                 }
                                 else
                                 {
-                                    <div>$ @course.Prices.Discount</div>
-                                    <div class="sale">Sale price</div>
+                                    <div class="sale">$ @course.Prices.Discount</div>
+
                                     <s><p>$ @course.Prices.Price</p></s>
                                 }
                             </div>
