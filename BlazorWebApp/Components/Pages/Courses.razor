@@ -33,7 +33,7 @@
         <div class="title-input-field">
             <h1>Courses</h1>
             <div class="inputs">
-                <InputSelect @bind-Value="selectedCategory"  name="categories" required>
+                <InputSelect @bind-Value:get="selectedCategory" @bind-Value:set="(value) => { selectedCategory = value; }" name="categories" required>
                     <option value="">All categories</option>
                     @if (categories != null)
                     {
@@ -152,6 +152,7 @@
 
     private string selectedCategory = string.Empty;
 
+
     private string searchText = string.Empty;
 
     private string FullName = "";
@@ -223,6 +224,8 @@
     }
 
 
+
+
     private void FilterCourses()
     {
         if (string.IsNullOrWhiteSpace(searchText) && string.IsNullOrWhiteSpace(selectedCategory))
@@ -234,7 +237,7 @@
         {
                     filteredCourses = courses.Where(c =>
             (string.IsNullOrWhiteSpace(searchText) || c.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
-            (string.IsNullOrWhiteSpace(selectedCategory) || (c.Categories != null && c.Categories.Contains(selectedCategory)))
+(string.IsNullOrWhiteSpace(selectedCategory) || (c.Categories != null && c.Categories.Contains(selectedCategory)))
             ).ToList();
         }
     }
