@@ -1690,14 +1690,13 @@ footer .container .social-media i:hover {
 }
 
 #account .container {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   padding-top: 50px;
   padding-bottom: 100px;
 }
 @media (max-width: 1200px) {
   #account .container {
-    grid-template-columns: 1fr;
+    display: block;
   }
 }
 @media (max-width: 992px) {
@@ -1705,11 +1704,14 @@ footer .container .social-media i:hover {
     padding-bottom: 0px;
   }
 }
+#account .container .loading-div {
+  margin: auto;
+}
 #account .container .profile {
   max-width: 318px;
   width: 100%;
   border-right: 1px solid #c9cbda;
-  padding-right: 10px;
+  padding-right: 30px;
 }
 @media (max-width: 1400px) {
   #account .container .profile {
@@ -1720,6 +1722,7 @@ footer .container .social-media i:hover {
   #account .container .profile {
     margin-left: auto;
     margin-right: auto;
+    padding-right: 0;
   }
 }
 #account .container .profile .profile-picture {
@@ -1758,7 +1761,13 @@ footer .container .social-media i:hover {
   background-color: #6366F1;
 }
 #account .container .details {
+  padding-left: 30px;
   padding-bottom: 100px;
+}
+@media (max-width: 1200px) {
+  #account .container .details {
+    padding-left: 0;
+  }
 }
 @media (max-width: 416px) {
   #account .container .details form input {
@@ -1783,6 +1792,7 @@ footer .container .social-media i:hover {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  justify-content: center;
 }
 @media (max-width: 992px) {
   #account .container .details .basic-info form {
@@ -2437,6 +2447,12 @@ footer .container .social-media i:hover {
 }
 .security-information {
   max-width: 856px;
+  padding-left: 30px;
+}
+@media (max-width: 1200px) {
+  .security-information {
+    padding-left: 0;
+  }
 }
 @media (max-width: 992px) {
   .security-information {
@@ -2538,9 +2554,19 @@ footer .container .social-media i:hover {
   }
 }
 
+.loading-div {
+  margin: auto;
+}
+
 .courses {
   align-self: flex-start;
   max-width: 856px;
+  padding-left: 30px;
+}
+@media (max-width: 1200px) {
+  .courses {
+    padding-left: 0;
+  }
 }
 @media (max-width: 500px) {
   .courses .container {
@@ -2714,7 +2740,10 @@ footer .container .social-media i:hover {
 }
 
 .settings {
-  margin-right: 130px;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
 }
 @media (max-width: 1400px) {
   .settings {

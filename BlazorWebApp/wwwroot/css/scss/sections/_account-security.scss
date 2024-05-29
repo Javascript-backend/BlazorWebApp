@@ -71,7 +71,11 @@
 
 .security-information {
     max-width: 856px;
+    padding-left: 30px;
 
+    @media (max-width: 1200px) {
+        padding-left: 0;
+    }
 
     @media (max-width: 992px) {
         text-align: center;
