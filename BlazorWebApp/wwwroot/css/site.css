@@ -1406,11 +1406,6 @@ footer .container .social-media i:hover {
   transition: background-color 0.5s ease-in-out;
 }
 
-@media (max-width: 1200px) {
-  #courses {
-    padding-left: 0;
-  }
-}
 #courses .container {
   padding-top: 55px;
   display: grid;
@@ -1794,6 +1789,7 @@ footer .container .social-media i:hover {
   color: #6366F1;
 }
 #account .container .details .basic-info form {
+  display: flex;
   flex-direction: column;
   gap: 20px;
   justify-content: center;
