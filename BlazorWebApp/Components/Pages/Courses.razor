@@ -17,6 +17,7 @@
 
 
 @rendermode InteractiveServer
+@attribute [StreamRendering]
 @attribute [Authorize]
 <PageTitle>Courses</PageTitle>
 
@@ -32,13 +33,17 @@
         <div class="title-input-field">
             <h1>Courses</h1>
             <div class="inputs">
-                <select name="categories" required>
-                    <option value="" disabled selected hidden>All categories</option>
-                    <option value="frontend">Frontend</option>
-                    <option value="backend">Backend</option>
-                    <option value="fullstack">Fullstack</option>
-                </select>
-                <input type="search" placeholder="Search courses">
+                <InputSelect @bind-Value="selectedCategory"  name="categories" required>
+                    <option value="">All categories</option>
+                    @if (categories != null)
+                    {
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    }
+                </InputSelect>
+                <InputText @onkeyup="FilterCourses" placeholder="Search courses" @bind-Value="searchText" />
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
         </div>
@@ -64,9 +69,9 @@
         <div class="articles">
 
 
-                @if(courses != null) {
+                @if(filteredCourses != null) {
 
-                        @foreach (var course in courses)
+                @foreach (var course in filteredCourses)
                         {
                     <div class="article" onclick="location.href='@($"SingleCourse?id={course.Id}")'">
                         @if (course.IsBestSeller)
@@ -141,6 +146,14 @@
 
     private List<CoursesSaved>? savedCourses;
 
+    private List<CourseCardModel>? filteredCourses;
+
+    private List<string>? categories;
+
+    private string selectedCategory = string.Empty;
+
+    private string searchText = string.Empty;
+
     private string FullName = "";
 
     private ApplicationUser user = new ApplicationUser();
@@ -199,8 +212,32 @@
             jsonResponse.RootElement.GetProperty("data").GetProperty("getAllCourses").ToString(),
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
+
+        categories = courses?
+         .SelectMany(course => course.Categories ?? Enumerable.Empty<string>())
+         .Distinct()
+         .ToList();
+
+
+        FilterCourses();
     }
 
+
+    private void FilterCourses()
+    {
+        if (string.IsNullOrWhiteSpace(searchText) && string.IsNullOrWhiteSpace(selectedCategory))
+        {
+            filteredCourses = courses;
+            return;
+        }
+        else
+        {
+                    filteredCourses = courses.Where(c =>
+            (string.IsNullOrWhiteSpace(searchText) || c.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
+            (string.IsNullOrWhiteSpace(selectedCategory) || (c.Categories != null && c.Categories.Contains(selectedCategory)))
+            ).ToList();
+        }
+    }
 
 
 

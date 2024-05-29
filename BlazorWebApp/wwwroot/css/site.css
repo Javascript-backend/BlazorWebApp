@@ -2543,7 +2543,7 @@ footer .container .social-media i:hover {
 
 .courses {
   align-self: flex-start;
-  width: 100%;
+  max-width: 856px;
 }
 @media (max-width: 500px) {
   .courses .container {
