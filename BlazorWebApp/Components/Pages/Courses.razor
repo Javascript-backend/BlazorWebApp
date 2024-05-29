@@ -33,7 +33,7 @@
         <div class="title-input-field">
             <h1>Courses</h1>
             <div class="inputs">
-                <InputSelect @bind-Value:get="selectedCategory" @bind-Value:set="(value) => { selectedCategory = value; }" name="categories" required>
+                <select @bind="selectedCategory" name="categories" @bind:event="onchange" required @bind:after="FilterCourses">
                     <option value="">All categories</option>
                     @if (categories != null)
                     {
@@ -42,7 +42,7 @@
                             <option value="@category">@category</option>
                         }
                     }
-                </InputSelect>
+                </select>
                 <InputText @onkeyup="FilterCourses" placeholder="Search courses" @bind-Value="searchText" />
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
@@ -152,7 +152,6 @@
 
     private string selectedCategory = string.Empty;
 
-
     private string searchText = string.Empty;
 
     private string FullName = "";
@@ -226,6 +225,8 @@
 
 
 
+
+
     private void FilterCourses()
     {
         if (string.IsNullOrWhiteSpace(searchText) && string.IsNullOrWhiteSpace(selectedCategory))
@@ -235,9 +236,9 @@
         }
         else
         {
-                    filteredCourses = courses.Where(c =>
-            (string.IsNullOrWhiteSpace(searchText) || c.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
-(string.IsNullOrWhiteSpace(selectedCategory) || (c.Categories != null && c.Categories.Contains(selectedCategory)))
+            filteredCourses = courses.Where(c =>
+                (string.IsNullOrWhiteSpace(searchText) || c.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(selectedCategory) || (c.Categories != null && c.Categories.Contains(selectedCategory)))
             ).ToList();
         }
     }
