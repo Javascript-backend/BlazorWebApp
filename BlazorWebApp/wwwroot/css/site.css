@@ -1406,6 +1406,11 @@ footer .container .social-media i:hover {
   transition: background-color 0.5s ease-in-out;
 }
 
+@media (max-width: 1200px) {
+  #courses {
+    padding-left: 0;
+  }
+}
 #courses .container {
   padding-top: 55px;
   display: grid;
@@ -1722,6 +1727,7 @@ footer .container .social-media i:hover {
   #account .container .profile {
     margin-left: auto;
     margin-right: auto;
+    padding-right: 0;
   }
 }
 #account .container .profile .profile-picture {
@@ -1762,6 +1768,11 @@ footer .container .social-media i:hover {
 #account .container .details {
   padding-left: 30px;
   padding-bottom: 100px;
+}
+@media (max-width: 1200px) {
+  #account .container .details {
+    padding-left: 0;
+  }
 }
 @media (max-width: 416px) {
   #account .container .details form input {
@@ -2442,6 +2453,11 @@ footer .container .social-media i:hover {
   max-width: 856px;
   padding-left: 30px;
 }
+@media (max-width: 1200px) {
+  .security-information {
+    padding-left: 0;
+  }
+}
 @media (max-width: 992px) {
   .security-information {
     text-align: center;
@@ -2550,6 +2566,11 @@ footer .container .social-media i:hover {
   align-self: flex-start;
   max-width: 856px;
   padding-left: 30px;
+}
+@media (max-width: 1200px) {
+  .courses {
+    padding-left: 0;
+  }
 }
 @media (max-width: 500px) {
   .courses .container {
