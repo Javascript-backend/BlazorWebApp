@@ -1,25 +1,30 @@
 #account {
 
     .container {
-        display: grid;
-        grid-template-columns: 1fr auto;
+        display: flex;
         padding-top: 50px;
         padding-bottom: 100px;
+        
+        
 
         @media (max-width: 1200px) {
-            grid-template-columns: 1fr;
+            display:block;
         }
 
         @media (max-width: 992px) {
             padding-bottom: 0px;
         }
 
+        .loading-div {
+           
+            margin:auto;
+        }
 
         .profile {
             max-width: 318px;
             width: 100%;
             border-right: 1px solid #c9cbda;
-            padding-right: 10px;
+            padding-right: 30px;
 
             @media (max-width: 1400px) {
                 border-right: none;
@@ -76,6 +81,7 @@
         }
 
         .details {
+            padding-left: 30px;
             padding-bottom: 100px;
 
             form {
@@ -108,9 +114,9 @@
                 }
 
                 form {
-                    display: flex;
                     flex-direction: column;
                     gap: 20px;
+                    justify-content: center;
 
                     @media (max-width: 992px) {
                         justify-content: center;
