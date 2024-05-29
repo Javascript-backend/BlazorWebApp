@@ -1705,6 +1705,9 @@ footer .container .social-media i:hover {
     padding-bottom: 0px;
   }
 }
+#account .container .loading-box-div {
+  margin-right: 1000px;
+}
 #account .container .profile {
   max-width: 318px;
   width: 100%;
