@@ -1,20 +1,30 @@
+.loading-div {
+    margin:auto;
+}
 .courses {
     align-self: flex-start;
     max-width: 856px;
+    padding-left: 30px;
+
+
+
+
 
     .container {
 
+
         @media(max-width: 500px) {
-            padding :0;
+            padding: 0;
         }
     }
+
+    
 
     .title-button {
         display: flex;
         justify-content: space-between;
 
         h2 {
-
             margin-right: 200px;
 
             @media (max-width: 500px) {
@@ -29,8 +39,7 @@
                 color: red;
                 padding: 8px 30px;
 
-                @media (max-width: 770px){
-
+                @media (max-width: 770px) {
                     padding: 5px;
                 }
             }
