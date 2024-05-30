@@ -2,7 +2,7 @@
 
 #courses {
 
-    
+
 
     .container {
         padding-top: 55px;
@@ -99,17 +99,27 @@
 
         .articles {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: auto auto auto;
+            justify-content: center;
+            align-items: center;
             gap: 30px;
             margin-top: 40px;
 
             @media (max-width: 1200px) {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
             }
 
             @media (max-width: 768px) {
-                grid-template-columns: 1fr;
+                grid-template-columns: auto;
             }
+
+            .spinner {
+                
+
+                .spinner-border {
+                }
+            }
+
 
             .article {
                 position: relative;
