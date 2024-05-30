@@ -43,7 +43,7 @@
                         }
                     }
                 </select>
-                <InputText @onkeyup="FilterCourses" placeholder="Search courses" @bind-Value="searchText" />
+                <input placeholder="Search courses" @bind="searchText" @bind:event="oninput" @bind:after="FilterCourses" />
                 <i class="fa-solid fa-magnifying-glass"></i>
             </div>
         </div>
@@ -71,59 +71,67 @@
 
                 @if(filteredCourses != null) {
 
-                @foreach (var course in filteredCourses)
-                        {
-                    <div class="article" onclick="location.href='@($"SingleCourse?id={course.Id}")'">
-                        @if (course.IsBestSeller)
-                        {
-                            <div class="best-seller">Best seller</div>
-                        }
+                    @foreach (var course in filteredCourses)
+                     {
+                             <div class="article" onclick="location.href='@($"SingleCourse?id={course.Id}")'">
+                                @if (course.IsBestSeller)
+                                {
+                                    <div class="best-seller">Best seller</div>
+                                }
 
 
-                        <EditForm Model="new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title }" OnValidSubmit="() => SaveCourse(new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title })">
-                            @if (savedCourses != null && savedCourses.Any(saved => saved.CourseId == course.Id))
-                            {
-                                <button class="saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
-                            }
-                            else
-                            {
-                                <button class="not-saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
-                            }
-                        </EditForm>
+                                <EditForm Model="new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title }" OnValidSubmit="() => SaveCourse(new SaveCourseModel { UserId = user.Id, CourseId = course.Id, Name = FullName, Email = user.Email, Title = course.Title })">
+                                    @if (savedCourses != null && savedCourses.Any(saved => saved.CourseId == course.Id))
+                                    {
+                                        <button class="saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="not-saved" onclick="event.stopPropagation()" type="submit"><i class="fa-regular fa-bookmark"></i></button>
+                                    }
+                                </EditForm>
                           
-                        <img src="@course.ImageUri" alt="">
-                        <div class="article-content">
-                            <h5>@course.Title</h5>
-                            <p>By @course.Authors?.FirstOrDefault()?.Name</p>
-                            <div class="price">
+                                <img src="@course.ImageUri" alt="">
+                                <div class="article-content">
+                                    <h5>@course.Title</h5>
+                                    <p>By @course.Authors?.FirstOrDefault()?.Name</p>
+                                    <div class="price">
 
-                                @if (course.Prices.Discount <= 0)
-                                {
-                                    <div>$ @course.Prices.Price</div>
-                                }
-                                else
-                                {
-                                    <div class="sale">$ @course.Prices.Discount</div>
+                                        @if (course.Prices.Discount <= 0)
+                                        {
+                                            <div>$ @course.Prices.Price</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="sale">$ @course.Prices.Discount</div>
 
-                                    <s><p>$ @course.Prices.Price</p></s>
-                                }
-                            </div>
-                            <div class="hours-likes">
-                                <div class="hours">
-                                    <i class="fa-duotone fa-timer"></i>
-                                    <p>@course.Hours hours</p>
+                                            <s><p>$ @course.Prices.Price</p></s>
+                                        }
+                                    </div>
+                                    <div class="hours-likes">
+                                        <div class="hours">
+                                            <i class="fa-duotone fa-timer"></i>
+                                            <p>@course.Hours hours</p>
+                                        </div>
+                                        <div class="likes">
+                                            <i class="fa-light fa-thumbs-up"></i>
+                                            <p>@course.LikesInPercent % (@course.Likes)</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="likes">
-                                    <i class="fa-light fa-thumbs-up"></i>
-                                    <p>@course.LikesInPercent % (@course.Likes)</p>
-                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                        }
                 }
-               
+            }
+            else
+            {
+                 <div class="spinner">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                 </div>
+
+            }
+
         </div>
 
     </div>

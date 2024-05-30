@@ -8,7 +8,7 @@
 
 
         @media (max-width: 1200px) {
-            display: block;
+            flex-direction: column;
         }
 
         @media (max-width: 992px) {
@@ -16,7 +16,7 @@
         }
 
         .loading-div {
-            margin: auto;
+           
         }
 
         .profile {
